@@ -1,0 +1,9 @@
+langgraph>=1.2
+langchain-openai>=1.3
+langchain-core>=1.4
+fastapi>=0.136
+uvicorn[standard]>=0.49
+redis>=8.0
+requests>=2.33
+ddgs>=9.0
+pydantic>=2.13
