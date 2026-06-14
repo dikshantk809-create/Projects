@@ -1,0 +1,231 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Multimodal RAG — Document Q&A</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Spectral:wght@500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EEF0F3; --surface:#FFFFFF; --ink:#16181D; --muted:#6A7280;
+    --line:#E2E5EA; --accent:#1F6F5C; --accent-soft:#E6F1ED;
+    --cite-ink:#8A5A12; --cite-bg:#FBF3E2; --cite-line:#EBD9B4;
+    --user-bg:#16181D; --user-ink:#F4F5F7;
+    --radius:14px; --maxw:760px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{
+    background:var(--bg); color:var(--ink);
+    font-family:'Inter',system-ui,sans-serif; font-size:15px; line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  #root{height:100%}
+  .app{display:flex;flex-direction:column;height:100%;max-width:var(--maxw);margin:0 auto;padding:0 16px}
+
+  /* Header */
+  .head{display:flex;align-items:center;gap:14px;padding:18px 4px 14px;border-bottom:1px solid var(--line)}
+  .mark{font-family:'Spectral',serif;font-weight:600;font-size:20px;letter-spacing:.2px}
+  .mark .dot{color:var(--accent)}
+  .doc-state{margin-left:auto;font-size:12.5px;color:var(--muted);text-align:right;line-height:1.4}
+  .doc-state b{color:var(--ink);font-weight:600}
+  .pill{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:11px;
+    background:var(--accent-soft);color:var(--accent);padding:1px 7px;border-radius:999px;margin-left:6px}
+
+  /* Transcript */
+  .scroll{flex:1;overflow-y:auto;padding:22px 4px}
+  .msg{margin-bottom:20px;display:flex;flex-direction:column;max-width:88%}
+  .msg.user{margin-left:auto;align-items:flex-end}
+  .bubble{padding:11px 15px;border-radius:var(--radius);white-space:pre-wrap}
+  .msg.user .bubble{background:var(--user-bg);color:var(--user-ink);border-bottom-right-radius:5px}
+  .msg.bot .bubble{background:var(--surface);border:1px solid var(--line);border-bottom-left-radius:5px}
+  .role{font-size:11px;color:var(--muted);margin:0 4px 5px;text-transform:uppercase;letter-spacing:.7px}
+
+  /* Citations — the signature element */
+  .cites{display:flex;flex-wrap:wrap;gap:6px;margin-top:9px}
+  .cite{font-family:'JetBrains Mono',monospace;font-size:11.5px;cursor:pointer;
+    background:var(--cite-bg);color:var(--cite-ink);border:1px solid var(--cite-line);
+    padding:2px 8px;border-radius:7px;transition:transform .08s ease}
+  .cite:hover{transform:translateY(-1px)}
+  .cite:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .snippet{margin-top:8px;font-size:12.5px;color:var(--muted);border-left:2px solid var(--cite-line);
+    padding:4px 0 4px 10px;background:transparent}
+
+  /* Empty state */
+  .empty{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:10px;color:var(--muted)}
+  .empty h2{font-family:'Spectral',serif;color:var(--ink);font-weight:600;margin:0;font-size:22px}
+  .drop{margin-top:12px;border:1.5px dashed var(--line);border-radius:var(--radius);
+    padding:26px 30px;cursor:pointer;transition:border-color .15s,background .15s}
+  .drop:hover{border-color:var(--accent);background:var(--accent-soft)}
+  .drop strong{color:var(--accent)}
+
+  /* Composer */
+  .composer{border-top:1px solid var(--line);padding:14px 4px 18px;display:flex;gap:10px;align-items:flex-end}
+  .composer textarea{flex:1;resize:none;font:inherit;color:var(--ink);background:var(--surface);
+    border:1px solid var(--line);border-radius:12px;padding:11px 13px;max-height:140px;outline:none}
+  .composer textarea:focus{border-color:var(--accent)}
+  .composer textarea:disabled{background:#F3F4F6;color:var(--muted)}
+  button{font:inherit;font-weight:600;cursor:pointer;border:none;border-radius:11px;padding:11px 16px}
+  .send{background:var(--accent);color:#fff}
+  .send:disabled{opacity:.45;cursor:not-allowed}
+  .upload-btn{background:var(--surface);border:1px solid var(--line);color:var(--ink);font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:9px;cursor:pointer}
+  .hint{font-size:12px;color:var(--muted);padding:0 4px 8px}
+  .dots:after{content:'';animation:dots 1.2s steps(4,end) infinite}
+  @keyframes dots{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}}
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+<script type="text/babel">
+const API = "http://localhost:8000";
+const { useState, useRef, useEffect } = React;
+
+function Citation({ s }) {
+  const [open, setOpen] = useState(false);
+  const label = `[${s.n}] ${s.source ?? "doc"} · p.${s.page} · ${s.type}`;
+  return (
+    <span>
+      <button className="cite" onClick={() => setOpen(o => !o)} aria-expanded={open}>{label}</button>
+      {open && <div className="snippet">{s.snippet}…</div>}
+    </span>
+  );
+}
+
+function Message({ m }) {
+  return (
+    <div className={`msg ${m.role}`}>
+      <div className="role">{m.role === "user" ? "You" : "Answer"}</div>
+      <div className="bubble">{m.text}</div>
+      {m.sources && m.sources.length > 0 && (
+        <div className="cites">{m.sources.map(s => <Citation key={s.n} s={s} />)}</div>
+      )}
+    </div>
+  );
+}
+
+function App() {
+  const [doc, setDoc] = useState(null);          // {filename, chunks, by_type}
+  const [indexing, setIndexing] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [thinking, setThinking] = useState(false);
+  const sessionId = useRef("s-" + Math.random().toString(36).slice(2));
+  const fileRef = useRef(null);
+  const scrollRef = useRef(null);
+
+  useEffect(() => {
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  }, [messages, thinking]);
+
+  async function upload(file) {
+    if (!file) return;
+    setIndexing(true); setDoc(null);
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch(`${API}/ingest`, { method: "POST", body: fd });
+      const data = await res.json();
+      if (data.ok) {
+        setDoc(data);
+        setMessages([]);
+      } else {
+        alert(data.error || "Could not index that file.");
+      }
+    } catch (e) {
+      alert("Could not reach the API. Is the server running on :8000?");
+    } finally {
+      setIndexing(false);
+    }
+  }
+
+  async function ask() {
+    const q = input.trim();
+    if (!q || thinking || !doc) return;
+    setInput("");
+    setMessages(m => [...m, { role: "user", text: q }]);
+    setThinking(true);
+    try {
+      const res = await fetch(`${API}/query`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question: q, session_id: sessionId.current }),
+      });
+      const data = await res.json();
+      if (data.ok) {
+        setMessages(m => [...m, { role: "bot", text: data.answer, sources: data.sources }]);
+      } else {
+        setMessages(m => [...m, { role: "bot", text: data.error || "Something went wrong." }]);
+      }
+    } catch (e) {
+      setMessages(m => [...m, { role: "bot", text: "Could not reach the API. Is the server running?" }]);
+    } finally {
+      setThinking(false);
+    }
+  }
+
+  function onKey(e) {
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); ask(); }
+  }
+
+  const typeSummary = doc && Object.entries(doc.by_type)
+    .map(([k, v]) => `${v} ${k}`).join(" · ");
+
+  return (
+    <div className="app">
+      <header className="head">
+        <div className="mark">Source<span className="dot">·</span>RAG</div>
+        <div className="doc-state">
+          {indexing && <span className="dots">Indexing</span>}
+          {!indexing && doc && <span><b>{doc.filename}</b><span className="pill">{doc.chunks} chunks</span><br/>{typeSummary}</span>}
+          {!indexing && !doc && <span>No document yet</span>}
+        </div>
+        <input ref={fileRef} type="file" accept="application/pdf" style={{display:"none"}}
+               onChange={e => upload(e.target.files[0])} />
+      </header>
+
+      {!doc && !indexing ? (
+        <div className="empty">
+          <h2>Ask your documents anything</h2>
+          <div>Upload a PDF — text, tables and images become searchable, and every answer cites its page.</div>
+          <div className="drop" onClick={() => fileRef.current.click()}>
+            <strong>Choose a PDF</strong> to begin
+          </div>
+        </div>
+      ) : (
+        <div className="scroll" ref={scrollRef}>
+          {messages.map((m, i) => <Message key={i} m={m} />)}
+          {thinking && <div className="msg bot"><div className="role">Answer</div>
+            <div className="bubble"><span className="dots">Searching the document</span></div></div>}
+        </div>
+      )}
+
+      {doc && <div className="hint">Multi-turn: ask follow-ups and it remembers the thread.</div>}
+
+      <div className="composer">
+        <button className="upload-btn" onClick={() => fileRef.current.click()} title="Replace document">＋ PDF</button>
+        <textarea
+          rows={1}
+          placeholder={doc ? "Ask a question about the document…" : "Upload a PDF first"}
+          value={input}
+          disabled={!doc || indexing}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={onKey}
+        />
+        <button className="send" onClick={ask} disabled={!doc || thinking || !input.trim()}>Send</button>
+      </div>
+    </div>
+  );
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+</script>
+</body>
+</html>
