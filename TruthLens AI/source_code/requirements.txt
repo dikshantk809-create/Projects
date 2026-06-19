@@ -1,0 +1,24 @@
+# ── TruthLens AI · core dependencies (all that's needed to run + demo) ──
+# Install with:  pip install -r requirements.txt
+streamlit>=1.30
+scikit-learn>=1.3
+pandas>=2.0
+numpy>=1.24
+joblib>=1.3
+matplotlib>=3.7
+plotly>=5.18
+requests>=2.31
+
+# Testing
+pytest>=7.4
+
+# ── OPTIONAL upgrades (NOT required — the app runs fully without these) ──
+# Dense semantic retrieval for the RAG fact-check agent. If absent, TruthLens
+# automatically falls back to a TF-IDF cosine retriever.
+#   pip install sentence-transformers faiss-cpu
+#
+# Fluent LLM-phrased explanations via a LOCAL model (no API key, no cost):
+#   1) install Ollama from https://ollama.com
+#   2) run:  ollama pull llama3.2
+# If no local LLM is reachable, TruthLens uses its deterministic template
+# generator so explanations always render offline.

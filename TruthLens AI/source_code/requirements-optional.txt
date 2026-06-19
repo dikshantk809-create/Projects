@@ -1,0 +1,4 @@
+# Optional upgrades for TruthLens AI (the app runs fully without these).
+# Dense semantic retrieval for the RAG fact-check agent:
+sentence-transformers>=2.2
+faiss-cpu>=1.7
