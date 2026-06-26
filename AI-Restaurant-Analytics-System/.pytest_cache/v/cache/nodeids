@@ -1,0 +1,6 @@
+[
+  "tests/test_food.py::test_combos",
+  "tests/test_food.py::test_forecast_and_staffing",
+  "tests/test_food.py::test_menu_opt",
+  "tests/test_food.py::test_rank_items"
+]
