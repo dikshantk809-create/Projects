@@ -1,0 +1,10 @@
+Copyright (c) 2026
+
+This reference architecture and source-code scaffold is provided as engineering
+starter material. You are free to use, modify, and deploy it. Replace this file
+with your company's chosen license (e.g. MIT, Apache-2.0, or a proprietary EULA)
+before commercial distribution.
+
+NO WARRANTY. The safety/security detection modules (fire, smoke, weapon,
+violence, intrusion, tennis line-calling) are decision-support tools and must be
+validated against your own data and operating conditions before being relied upon.

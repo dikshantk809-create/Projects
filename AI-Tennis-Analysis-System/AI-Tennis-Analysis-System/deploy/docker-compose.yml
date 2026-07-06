@@ -1,0 +1,22 @@
+services:
+  db:
+    image: timescale/timescaledb-ha:pg16
+    environment: { POSTGRES_USER: tennis, POSTGRES_PASSWORD: tennis, POSTGRES_DB: tennis }
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+      - ../db/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    ports: ["5435:5432"]
+  backend:
+    build: { context: .., dockerfile: deploy/Dockerfile.backend }
+    env_file: ../.env
+    depends_on: [db]
+    ports: ["8003:8003"]
+  dashboard:
+    build: { context: ../dashboard }
+    ports: ["5176:80"]
+    depends_on: [backend]
+  grafana:
+    image: grafana/grafana:latest
+    ports: ["3003:3000"]
+    volumes: ["grafana:/var/lib/grafana"]
+volumes: { dbdata: {}, grafana: {} }
