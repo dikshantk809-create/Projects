@@ -1,99 +1,230 @@
-# Project 3 — AI Tennis Analysis System
+<div align="center">
 
-AI referee + match/player analytics for tennis: ball/player/court tracking, automated
-IN/OUT line-calling, live scoring, rally/serve/shot stats, player movement analytics,
-and spectator + coach dashboards.
+<img src="https://capsule-render.vercel.app/api?type=speech&color=0:CCFF00,100:00B140&height=230&section=header&text=AI%20Tennis%20Analysis&fontSize=55&fontColor=1a1a2e&animation=fadeIn&desc=AI%20Referee%20+%20Match%20Analytics%20for%20Tennis&descSize=18&descAlignY=72" width="100%"/>
 
-> **Accuracy reality (read this):** broadcast Hawk-Eye uses **10+ calibrated cameras at
-> ≥120 fps** and achieves ~few-mm accuracy. A single 30–50 fps camera gives **indicative**
-> calls only. This system targets **club/academy grade**: ~85–92% line-call agreement
-> with 1 good camera, rising toward 95%+ with **2+ synchronized ≥120 fps cameras +
-> calibration**. See [`docs/16-accuracy-and-roadmap.md`](docs/16-accuracy-and-roadmap.md).
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&duration=2800&pause=700&color=00B140&center=true&vCenter=true&width=720&lines=Ball+Tracking+with+TrackNetV4+%F0%9F%8E%BE;Automated+IN%2FOUT+Line+Calling+%F0%9F%93%8F;Live+Scoring+%2B+Rally+Stats+%F0%9F%8F%86;Player+Movement+Heatmaps+%F0%9F%94%A5;Coach+%2B+Spectator+Dashboards+%F0%9F%93%8A" alt="Typing SVG" />
+
+<br/><br/>
+
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
+![YOLO11](https://img.shields.io/badge/YOLO11-00FFFF?style=for-the-badge&logo=yolo&logoColor=black)
+![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+
+<img src="https://img.shields.io/badge/Ball_Tracking-TrackNetV4-brightgreen?style=flat-square"/>
+<img src="https://img.shields.io/badge/Players-YOLO11_+_ByteTrack-blue?style=flat-square"/>
+<img src="https://img.shields.io/badge/Line_Calls-85--95%25_Agreement-yellow?style=flat-square"/>
+<img src="https://img.shields.io/badge/Grade-Club_%2F_Academy-orange?style=flat-square"/>
+
+</div>
 
 ---
 
-## 1. System Architecture
-Capture (high-FPS camera) → ball tracker (TrackNetV4 heatmap) + player tracker
-(YOLO11+ByteTrack) + court detector (lines→homography) → bounce detection → project
-bounce to court plane → IN/OUT call → scoring FSM → events → backend → dashboards.
-Tennis needs more compute per frame than the other two systems → **Jetson Orin or GPU**
-recommended (see hardware). [`blueprint-docs/01-system-architecture.md`](blueprint-docs/01-system-architecture.md).
+## 🎾 What Is This?
 
-## 2. Hardware List
-Tier B/C: NVIDIA Jetson Orin Nano/NX **or** RTX GPU box; **≥1 (ideally 2+) global-shutter
-≥120 fps cameras**, fast lens, sturdy elevated mount, calibration target. A single Pi 5 +
-Hailo can run player/court analytics but **not** reliable high-speed ball calls.
-[`blueprint-docs/02-hardware-guide.md`](blueprint-docs/02-hardware-guide.md).
+> **Hawk-Eye ki premium accuracy, club-friendly budget mein.**
+> Ball/player/court tracking, automated IN/OUT calls, live scoring, rally & serve stats — sab ek high-FPS camera aur AI se.
 
-## 3. Software Stack
-Python, PyTorch (TrackNetV4), Ultralytics YOLO11 (players), OpenCV (court lines,
-homography), FastAPI, PostgreSQL16+TimescaleDB, React + Tailwind + Recharts, Grafana,
-Docker. [`blueprint-docs/04-tech-stack.md`](blueprint-docs/04-tech-stack.md).
+Ye system **club/academy grade** analytics target karta hai: 1 achhe camera se ~**85–92%** line-call agreement, aur 2+ synchronized ≥120fps cameras + calibration ke saath **95%+** tak. (Broadcast Hawk-Eye 10+ cameras use karta hai — hum realistic rahte hain. 📏)
 
-## 4. Database Design
-[`db/schema.sql`](db/schema.sql): `matches`, `players`, `sets`, `games`, `points`,
-`rallies`, `shots`, `ball_positions` (Timescale), `player_tracks` (Timescale),
-`line_calls`, `serves`, `highlights`.
+---
 
-## 5. Folder Structure
-Same layout: `backend/`, `edge/`, `ml/`, `dashboard/`, `db/`, `deploy/`, `tests/`.
-Core logic: `edge/tennis_pipeline.py`, `backend/app/services/scoring.py`,
-`backend/app/services/court.py`.
+## 🏗️ System Architecture
 
-## 6. API Design
-[`docs/06-api-design.md`](docs/06-api-design.md): `POST /matches`, `POST /ingest/events`,
-`GET /matches/{id}/score` (live), `/matches/{id}/stats`, `/players/{id}/analytics`,
-`/matches/{id}/calls`, `/matches/{id}/highlights`, `WS /ws/match/{id}` (live score + ball).
+```mermaid
+flowchart LR
+    A["📹 High-FPS<br/>Camera"] --> B["🎾 Ball Tracker<br/>TrackNetV4 Heatmap"]
+    A --> C["🏃 Player Tracker<br/>YOLO11 + ByteTrack"]
+    A --> D["📐 Court Detector<br/>Lines → Homography"]
+    B --> E["⬇️ Bounce<br/>Detection"]
+    D --> E
+    E --> F{"📏 IN / OUT<br/>Call"}
+    F --> G["🏆 Scoring FSM"]
+    C --> G
+    G -->|"📨 Events"| H["🚀 FastAPI<br/>Backend"]
+    H --> I[("🐘 PostgreSQL<br/>TimescaleDB")]
+    H --> J["📊 Dashboards<br/>Spectator + Coach"]
 
-## 7. Dashboard Design
-[`docs/07-dashboard-design.md`](docs/07-dashboard-design.md): **Spectator** (live score,
-ball-tracking viz, stats, instant replay), **Coach** (strengths/weaknesses, shot
-distribution, court heatmaps, tactical suggestions). Mobile-responsive.
+    style A fill:#1a1a2e,color:#fff,stroke:#CCFF00
+    style B fill:#00B140,color:#fff,stroke:#CCFF00,stroke-width:3px
+    style C fill:#0066CC,color:#fff,stroke:#61DAFB
+    style D fill:#7B2FBE,color:#fff,stroke:#B721FF
+    style E fill:#FF9800,color:#000,stroke:#F57C00
+    style F fill:#FF416C,color:#fff,stroke:#FF4B2B,stroke-width:3px
+    style G fill:#FFD700,color:#000,stroke:#FFA000
+    style H fill:#009688,color:#fff,stroke:#00695C
+    style I fill:#4169E1,color:#fff,stroke:#1E3A8A
+    style J fill:#61DAFB,color:#000,stroke:#0288D1
+```
 
-## 8. AI Models Used
-TrackNetV4 (ball heatmap tracking), YOLO11 + ByteTrack (players), classical+learned court
-line detection → homography, bounce detector (trajectory inflection), serve-speed
-estimation from ball displacement + calibration. [`blueprint-docs/07-ai-models-overview.md`](blueprint-docs/07-ai-models-overview.md).
+**Pipeline:** `Capture → Ball + Player + Court AI → Bounce → IN/OUT → Scoring → Events → Backend → Dashboards`
 
-## 9. Training Pipeline
-[`docs/09-training-pipeline.md`](docs/09-training-pipeline.md): train/fine-tune TrackNet
-on labeled tennis rallies (heatmap targets), YOLO player detection (pretrained ok),
-court keypoint model; evaluate ball-tracking precision + bounce-localization error.
+---
 
-## 10. Deployment Guide
-[`docs/10-deployment.md`](docs/10-deployment.md): GPU/Jetson inference node + backend +
-dashboard via docker-compose; camera calibration step before first match.
+## ✨ Features
 
-## 11. Cost Estimation
-Tier B ≈ $1.5k–3k; Tier C (true high-accuracy, multi-cam ≥120 fps) ≈ $10k–30k.
-[`blueprint-docs/03-cost-estimation.md`](blueprint-docs/03-cost-estimation.md).
+<table>
+<tr>
+<td width="33%" valign="top" align="center">
 
-## 12. Security Design
-No biometrics (sports analytics). JWT + RBAC (admin/coach/player/spectator), TLS,
-match-data access control, signed replay/highlight URLs. [`blueprint-docs/05-security-and-compliance.md`](blueprint-docs/05-security-and-compliance.md).
+### 🎾 Ball Tracking
+**TrackNetV4** heatmap-based tracking — chhoti, fast-moving ball ko bhi frame-by-frame follow karta hai.
 
-## 13. Source Code
-Edge: [`edge/tennis_pipeline.py`](edge/tennis_pipeline.py). Scoring FSM:
-[`backend/app/services/scoring.py`](backend/app/services/scoring.py). Court/IN-OUT:
-[`backend/app/services/court.py`](backend/app/services/court.py).
+</td>
+<td width="33%" valign="top" align="center">
 
-## 14. Raspberry Pi Setup
-[`docs/14-raspberry-pi-setup.md`](docs/14-raspberry-pi-setup.md): Pi handles player/court
-analytics + dashboard client; ball calls need Jetson/GPU. Includes camera calibration.
+### 📏 Auto Line Calling
+Bounce detection + court homography = automated **IN/OUT calls** with confidence scores.
 
-## 15. Step-by-Step Implementation Plan
-[`docs/15-implementation-plan.md`](docs/15-implementation-plan.md): MVP (player tracking +
-manual-assisted scoring) → Beta (ball tracking + auto IN/OUT + live score) → Production
-(multi-cam calibration, highlights, coach analytics, accuracy validation).
+</td>
+<td width="33%" valign="top" align="center">
 
-## 16. Future Enhancements
-Multi-camera triangulation for 3D ball + 95%+ calls, serve/stroke biomechanics, auto
-highlight reels with commentary, broadcast overlay graphics, doubles support, wearable
-fusion, opponent scouting reports. [`docs/16-accuracy-and-roadmap.md`](docs/16-accuracy-and-roadmap.md).
+### 🏆 Live Scoring
+Scoring FSM — points, games, sets automatically track hote hain. WebSocket se **live score** stream.
 
-### Quick start
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top" align="center">
+
+### 🏃 Player Analytics
+YOLO11 + ByteTrack se movement tracking — court coverage, speed, **position heatmaps**.
+
+</td>
+<td width="33%" valign="top" align="center">
+
+### 📊 Coach Dashboard
+Strengths/weaknesses, shot distribution, court heatmaps & **tactical suggestions**.
+
+</td>
+<td width="33%" valign="top" align="center">
+
+### 🎬 Instant Replay
+Line calls ke replays, serve-speed estimation & auto **highlights** — spectator view mein.
+
+</td>
+</tr>
+</table>
+
+---
+
+## 🧠 AI Stack
+
+| Layer | Technology | Job |
+|-------|-----------|-----|
+| 🎾 Ball | **TrackNetV4** (PyTorch) | Heatmap-based ball tracking |
+| 🏃 Players | **YOLO11 + ByteTrack** | Detection & multi-frame tracking |
+| 📐 Court | OpenCV lines + learned keypoints | Court detection → homography |
+| ⬇️ Bounce | Trajectory inflection detector | Bounce localization on court plane |
+| 🚀 Serve Speed | Ball displacement + calibration | Speed estimation |
+| 🏆 Scoring | Finite State Machine | Point/game/set logic |
+
+---
+
+## 📂 Project Structure
+
+```
+AI-Tennis-Analysis-System/
+│
+├── ⚡ edge/             → tennis_pipeline.py (main inference loop)
+├── 🚀 backend/          → FastAPI: scoring.py, court.py, services & routes
+├── 📊 dashboard/        → React + Tailwind + Recharts (Spectator | Coach)
+├── 🧠 ml/               → TrackNet training, YOLO fine-tuning, evaluation
+├── 🐘 db/               → schema.sql — matches, rallies, shots, line_calls
+├── 🐳 deploy/           → docker-compose, Dockerfiles, Grafana
+├── 📘 blueprint-docs/   → Architecture, hardware, cost, tech stack
+├── 📚 docs/             → API design, training, deployment, accuracy roadmap
+└── 🧪 tests/
+```
+
+---
+
+## ⚙️ Quick Start
+
 ```bash
+# Clone & enter
+git clone https://github.com/dikshantk809-create/Projects.git
+cd Projects/AI-Tennis-Analysis-System
+
+# Configure & launch
 cp .env.example .env
 docker compose -f deploy/docker-compose.yml up -d --build
-# API http://localhost:8003/docs   Dashboard http://localhost:5176
+
+# 🚀 API      → http://localhost:8003/docs
+# 📊 Dashboard → http://localhost:5176
 ```
+
+> 📌 **Note:** Pehli match se pehle camera calibration zaroori hai — dekho [`docs/10-deployment.md`](./docs/10-deployment.md)
+
+---
+
+## 🎛️ Hardware Tiers
+
+| Tier | Setup | Line-Call Accuracy | Cost |
+|------|-------|-------------------|------|
+| 🟢 **A** — Pi 5 + Hailo | Player/court analytics only | Ball calls ❌ | Budget |
+| 🟡 **B** — Jetson Orin / RTX | 1× ≥120fps global-shutter cam | ~85–92% | $1.5k–3k |
+| 🔴 **C** — Multi-cam Pro | 2+ synced ≥120fps + calibration | 95%+ | $10k–30k |
+
+---
+
+## 📊 Accuracy Reality Check
+
+> 🎯 Hum **honest numbers** report karte hain:
+
+- 📺 Broadcast Hawk-Eye: 10+ calibrated cams @ ≥120fps → few-mm accuracy
+- 📷 Single 30–50fps camera → **indicative calls only**
+- 🎾 Ye system: club-grade **85–92%** (1 cam) → **95%+** (multi-cam + calibration)
+- 📘 Full analysis: [`docs/16-accuracy-and-roadmap.md`](./docs/16-accuracy-and-roadmap.md)
+
+---
+
+## 🔌 API Highlights
+
+```http
+POST  /matches                      → create match
+POST  /ingest/events                → edge → backend events
+GET   /matches/{id}/score           → live score
+GET   /matches/{id}/stats           → rally/serve/shot stats
+GET   /players/{id}/analytics       → player analytics
+GET   /matches/{id}/highlights      → auto highlights
+WS    /ws/match/{id}                → live score + ball stream
+```
+
+---
+
+## 🗺️ Roadmap
+
+- [x] **MVP** — player tracking + manual-assisted scoring
+- [x] **Beta** — ball tracking + auto IN/OUT + live score
+- [ ] **Production** — multi-cam calibration + accuracy validation
+- [ ] 🎥 Multi-camera triangulation → 3D ball, 95%+ calls
+- [ ] 🤸 Serve/stroke biomechanics analysis
+- [ ] 🎬 Auto highlight reels with commentary
+- [ ] 📺 Broadcast overlay graphics
+- [ ] 👥 Doubles support + opponent scouting reports
+
+---
+
+<div align="center">
+
+## 🤝 Connect
+
+[![GitHub](https://img.shields.io/badge/GitHub-dikshantk809--create-181717?style=for-the-badge&logo=github)](https://github.com/dikshantk809-create)
+[![Email](https://img.shields.io/badge/Email-dikshantk809%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:dikshantk809@gmail.com)
+
+<br/>
+
+### ⭐ Ace this repo with a star!
+
+*"Every point tracked. Every call fair. Every match smarter."*
+
+**Built with ❤️ & 🎾 by Dikshant**
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:00B140,100:CCFF00&height=110&section=footer" width="100%"/>
+
+</div>
