@@ -1,50 +1,33 @@
 <div align="center">
 
-<img src="assets/banner.png" alt="OfficeBot" width="100%">
+<img src="https://capsule-render.vercel.app/api?type=rounded&color=0:22314E,50:1f6feb,100:22c55e&height=220&section=header&text=🤖%20OfficeBot&fontSize=64&fontColor=ffffff&animation=fadeIn&desc=Autonomous%20Food%20Delivery%20Robot%20—%20ROS%202%20+%20Nav2&descSize=18&descAlignY=75" width="100%"/>
 
-# 🤖 OfficeBot — Autonomous Food Delivery Robot
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&duration=2800&pause=700&color=1F6FEB&center=true&vCenter=true&width=720&lines=Order+from+QR+%E2%86%92+Robot+Delivers+to+Desk+%F0%9F%9A%9A;SLAM+Mapping+%2B+Nav2+Navigation+%F0%9F%97%BA%EF%B8%8F;OTP-Secured+Handover+%F0%9F%94%90;Robot+Fleet+with+Auto-Charging+%F0%9F%94%8B;Zero-Install+Web+Platform+%E2%9A%A1" alt="Typing SVG" />
 
-**Order from a web app or a table QR code → a ROS 2 + Nav2 robot delivers to your desk → it returns to the kitchen.**
+<br/><br/>
 
-<a href="#"><img src="https://img.shields.io/badge/ROS-2-22314E?logo=ros&logoColor=white"></a>
-<a href="#"><img src="https://img.shields.io/badge/Nav2-navigation-1f6feb"></a>
-<a href="#"><img src="https://img.shields.io/badge/Gazebo-simulation-f59e0b"></a>
-<a href="#"><img src="https://img.shields.io/badge/Python-3-3776AB?logo=python&logoColor=white"></a>
-<a href="#"><img src="https://img.shields.io/badge/web%20app-zero%20dependencies-22c55e"></a>
-<a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-lightgrey"></a>
-<img src="https://img.shields.io/badge/status-active-success">
+![ROS 2](https://img.shields.io/badge/ROS_2-22314E?style=for-the-badge&logo=ros&logoColor=white)
+![Nav2](https://img.shields.io/badge/Nav2-1f6feb?style=for-the-badge&logo=ros&logoColor=white)
+![Gazebo](https://img.shields.io/badge/Gazebo-f59e0b?style=for-the-badge&logo=gazebo&logoColor=black)
+![Python](https://img.shields.io/badge/Python_3-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+
+<img src="https://img.shields.io/badge/SLAM-slam__toolbox-blueviolet?style=flat-square"/>
+<img src="https://img.shields.io/badge/Localization-AMCL-blue?style=flat-square"/>
+<img src="https://img.shields.io/badge/Web_App-Zero_Dependencies-22c55e?style=flat-square"/>
+<img src="https://img.shields.io/badge/License-MIT-lightgrey?style=flat-square"/>
+<img src="https://img.shields.io/badge/Status-Active-success?style=flat-square"/>
 
 </div>
 
-> An end-to-end robotics + full-stack project: autonomous indoor navigation on a real SLAM map, a complete ordering & kitchen-management platform, secure OTP delivery, a robot fleet, and live analytics — the web platform runs on **pure Python standard library, zero installs**.
-
 ---
 
-## 🎬 Screenshots
+## 🎯 What Is This?
 
-| 🍽️ Order &amp; live tracking | 🗺️ Live map (real SLAM) | 📊 Analytics &amp; AI |
-|:---:|:---:|:---:|
-| <img src="assets/preview_order.png" width="100%"> | <img src="assets/live_map.png" width="100%"> | <img src="assets/preview_analytics.png" width="100%"> |
-| Menu, per-desk delivery, OTP confirm | Robot shown live on the office map | Revenue, busiest desk, demand prediction |
+> **Web app ya table QR se order karo → ROS 2 + Nav2 robot aapki desk tak khaana pahunchata hai → wapas kitchen chala jaata hai.**
 
----
-
-## ✨ Features
-
-| | Feature | Description |
-|---|---|---|
-| 🍽️ | **Web + QR ordering** | Order from a laptop or scan a table QR from your phone |
-| 👨‍🍳 | **Kitchen dashboard** | Real workflow — *Prepare → Ready → Dispatch robot* |
-| 🗺️ | **Live map** | Robot rendered live on the **actual SLAM occupancy map** |
-| 🚚 | **Order tracking** | Step-by-step status + ETA for the customer |
-| 🔐 | **OTP delivery** | Food released only after the correct 4-digit code |
-| 🤖 | **Robot fleet** | Two robots; the nearest free one is auto-assigned |
-| 🔋 | **Battery + charging** | Robots auto-return to a charge dock when low |
-| 🧭 | **Obstacle avoidance** | Robot pauses / re-routes around obstacles |
-| 📊 | **Analytics + AI** | Busiest desk, revenue, avg time, demand prediction |
-| 🗄️ | **Persistence** | SQLite stores every order — survives restarts |
-| 🔊 | **Voice + QR sheet** | Spoken alerts and a printable QR sheet for tables |
-| 📦 | **Zero install** | Web platform uses only the Python standard library |
+Ek complete **robotics + full-stack** project: real SLAM map par autonomous indoor navigation, poora ordering & kitchen-management platform, OTP-secured delivery, robot fleet, aur live analytics. Aur mazedaar baat — web platform **pure Python standard library** par chalta hai. **Zero installs.** ⚡
 
 ---
 
@@ -52,49 +35,98 @@
 
 ```mermaid
 flowchart LR
-    A["📱 Customer<br/>phone / laptop · QR scan"] -- HTTP --> B["🖥️ OfficeBot PRO<br/>web platform · Python + SQLite"]
-    B -- status / live map --> A
-    B -- dispatched desk --> C["🔌 ROS 2 Bridge<br/>nav goals"]
-    C -- live pose --> B
-    C -- navigate_to_pose --> D["🤖 Gazebo + Nav2<br/>robot + SLAM map"]
-    D -- AMCL pose --> C
+    A["📱 Customer<br/>Phone / Laptop / QR"] -- "HTTP" --> B["🖥️ OfficeBot PRO<br/>Web Platform<br/>Python + SQLite"]
+    B -- "status + live map" --> A
+    B -- "dispatch desk" --> C["🔌 ROS 2 Bridge<br/>nav goals"]
+    C -- "live pose" --> B
+    C -- "navigate_to_pose" --> D["🤖 Gazebo + Nav2<br/>Robot + SLAM Map"]
+    D -- "AMCL pose" --> C
+
+    style A fill:#22c55e,color:#000,stroke:#16a34a,stroke-width:2px
+    style B fill:#1f6feb,color:#fff,stroke:#22314E,stroke-width:3px
+    style C fill:#7F5AF0,color:#fff,stroke:#B721FF,stroke-width:2px
+    style D fill:#22314E,color:#fff,stroke:#f59e0b,stroke-width:3px
 ```
 
-- **Simulation mode (default):** the web app animates the robot fleet internally — runs anywhere Python runs, no ROS required.
-- **Real mode:** a ROS 2 bridge streams the robot's live pose to the web app and turns web dispatches into real Nav2 goals.
+**2 Modes:**
+
+- 🎮 **Simulation (default)** — web app robot fleet internally animate karta hai. No ROS needed, kahin bhi chalega.
+- 🤖 **Real mode** — ROS 2 bridge live pose stream karta hai aur web dispatches ko **real Nav2 goals** mein convert karta hai.
 
 ---
 
-## 🛠 Tech Stack
+## ✨ Features
 
-`ROS 2` · `Nav2` · `Gazebo` · `SLAM (slam_toolbox)` · `AMCL` · `Python 3 stdlib` (`http.server`, `sqlite3`, `threading`) · `SQLite` · `HTML/CSS/JS` · `Chart.js` · `qrcode.js`
+<table>
+<tr>
+<td width="33%" valign="top" align="center">
+
+### 🍽️ Web + QR Ordering
+Laptop se order karo ya table ka **QR scan** karke phone se — order page us desk par pre-set khulta hai.
+
+</td>
+<td width="33%" valign="top" align="center">
+
+### 👨‍🍳 Kitchen Dashboard
+Real workflow — **Prepare → Ready → Dispatch robot**. Ek click aur robot nikal padta hai.
+
+</td>
+<td width="33%" valign="top" align="center">
+
+### 🗺️ Live SLAM Map
+Robot **actual SLAM occupancy map** par live render hota hai — customer real-time tracking dekhta hai.
+
+</td>
+</tr>
+<tr>
+<td width="33%" valign="top" align="center">
+
+### 🔐 OTP Delivery
+Khaana sirf sahi **4-digit code** dalne par release hota hai. No mix-ups.
+
+</td>
+<td width="33%" valign="top" align="center">
+
+### 🤖 Smart Fleet
+2 robots — **nearest free robot** auto-assign hota hai. Battery low? Auto charge-dock return. 🔋
+
+</td>
+<td width="33%" valign="top" align="center">
+
+### 📊 Analytics + AI
+Revenue, busiest desk, avg delivery time & **demand prediction** — sab live charts mein.
+
+</td>
+</tr>
+</table>
+
+**Aur bhi:** 🧭 obstacle avoidance (pause/re-route) · 🗄️ SQLite persistence (restarts survive) · 🔊 voice alerts · 📄 printable QR sheet
 
 ---
 
 ## 🚀 Quick Start
 
-### Web platform (only Python 3 needed)
+### 🖥️ Web Platform (sirf Python 3 chahiye!)
 
 ```bash
 python3 officebot_pro.py
 ```
 
-Open **http://localhost:5000**
-
 | Page | URL |
 |------|-----|
-| 🍽️ Customer ordering | `/` |
-| 👨‍🍳 Kitchen dashboard | `/admin` |
-| 📊 Analytics + AI | `/stats` |
+| 🍽️ Customer ordering | `http://localhost:5000/` |
+| 👨‍🍳 Kitchen dashboard | `http://localhost:5000/admin` |
+| 📊 Analytics + AI | `http://localhost:5000/stats` |
 
-> **Windows one-click:** double-click **`Start_OfficeBot.bat`** — it opens the phone port, starts the server, and launches the browser.
+> 💡 **Windows one-click:** `Start_OfficeBot.bat` double-click karo — port kholta hai, server start karta hai, browser launch karta hai.
 
-### Robot simulation (ROS 2)
+### 🤖 Robot Simulation (ROS 2)
 
 ```bash
-# 1) Gazebo world + robot
+# 1️⃣ Gazebo world + robot
 ros2 launch <your_pkg> office_world.launch.py
-# 2) Nav2 + saved map
+
+# 2️⃣ Nav2 + saved SLAM map
 ros2 launch nav2_bringup bringup_launch.py \
   map:=officebot_maps/office_15desk_map.yaml use_sim_time:=true
 ```
@@ -103,71 +135,93 @@ ros2 launch nav2_bringup bringup_launch.py \
 
 ## 🔄 Order-to-Delivery Flow
 
-1. **Customer** picks items + a desk → *Place order* → receives a 4-digit **OTP**.
-2. **Kitchen** → *Start preparing → Mark ready → Dispatch robot*.
-3. The **nearest robot** drives to the desk (watch the live map).
-4. **Customer** enters the OTP → **Delivered**.
-5. Robot **returns to the kitchen** dock.
+```mermaid
+flowchart LR
+    A["🍽️ Order + Desk<br/>→ OTP milta hai"] --> B["👨‍🍳 Kitchen<br/>Prepare → Ready"]
+    B --> C["🚚 Dispatch<br/>nearest robot"]
+    C --> D["🗺️ Robot drives<br/>(live map)"]
+    D --> E["🔐 OTP Enter<br/>→ Delivered ✅"]
+    E --> F["🔙 Robot returns<br/>to kitchen"]
+
+    style A fill:#22c55e,color:#000
+    style B fill:#f59e0b,color:#000
+    style C fill:#1f6feb,color:#fff
+    style D fill:#7F5AF0,color:#fff
+    style E fill:#FF416C,color:#fff
+    style F fill:#22314E,color:#fff
+```
 
 ---
 
 ## 📂 Project Structure
 
 ```
-OfficeBot/
-├── officebot_pro.py          # Main web platform (ordering, kitchen, analytics, OTP, fleet, live map)
-├── officebot_app.py          # Earlier simple single-page version
-├── officebot_nav_bridge.py   # ROS 2 bridge: web orders → real Nav2 goals + live pose
-├── Start_OfficeBot.bat       # One-click launcher (phone access + server + browser)
-├── officebot_web/            # ROS-side order server + Nav2 goal sender
-├── officebot_sim/  officebot_world/   # Gazebo worlds
-├── officebot_maps/           # SLAM maps (.pgm + .yaml)
-├── ros2_ws/                  # ROS 2 workspace (packages, launch files)
-├── assets/                   # README images
-├── docs/PUBLISH_TO_GITHUB.md # How this repo was published
-├── MAP_FIX_GUIDE.md          # Make all 15 desks reachable
-├── OfficeBot_Project_Report.docx
-├── README.md · LICENSE · .gitignore
+🤖 OfficeBot/
+│
+├── 🖥️ officebot_pro.py         → Main web platform (ordering, kitchen,
+│                                  analytics, OTP, fleet, live map)
+├── 🔌 officebot_nav_bridge.py  → ROS 2 bridge: web orders → Nav2 goals
+├── ⚡ Start_OfficeBot.bat      → One-click launcher
+├── 🌐 officebot_web/           → ROS-side order server + goal sender
+├── 🏢 officebot_sim/ + _world/ → Gazebo worlds
+├── 🗺️ officebot_maps/          → SLAM maps (.pgm + .yaml)
+├── 📦 ros2_ws/                 → ROS 2 workspace (packages, launch files)
+├── 📘 MAP_FIX_GUIDE.md         → Make all 15 desks reachable
+└── 📚 docs/
 ```
 
 ---
 
 ## 📱 Phone / QR Access
 
-The site listens on `0.0.0.0:5000`. `Start_OfficeBot.bat` forwards the port and opens the firewall so phones on the **same WiFi** can reach it, and the QR codes automatically point to your PC's LAN IP (e.g. `http://192.168.0.103:5000`). Scan a desk's QR to open the order page pre-set to that desk.
+Site `0.0.0.0:5000` par listen karti hai. `Start_OfficeBot.bat` port forward + firewall open karta hai — **same WiFi** ke phones access kar sakte hain. QR codes automatically aapke PC ke LAN IP par point karte hain (e.g. `http://192.168.0.103:5000`). 📲
 
 ---
 
-## 🗺 Roadmap
-
-- [ ] Drive a physical robot from web dispatches (live Nav2 goals)
-- [ ] Full 15-desk reachable map (extended SLAM) — see `MAP_FIX_GUIDE.md`
-- [ ] On-robot camera + face/QR confirmation at hand-over
-- [ ] Real payment (UPI) + WhatsApp/SMS notifications
-- [ ] Multi-floor (elevator) navigation
-- [ ] Fleet scaling with demand-based pre-positioning
-
----
-
-## 📌 Citation
-
-```bibtex
-@software{officebot,
-  author  = {Dikshant},
-  title   = {OfficeBot: Autonomous Food Delivery Robot with a Full-Stack Ordering Platform},
-  year    = {2026},
-  url      = {https://github.com/YOUR_USERNAME/OfficeBot}
-}
-```
-
----
-
-## 📄 License
-
-Released under the **MIT License** — see [`LICENSE`](LICENSE).
+## 🛠️ Tech Stack
 
 <div align="center">
 
-⭐ If you find this project useful, consider giving it a star!
+| Layer | Tech |
+|-------|------|
+| 🤖 Robotics | ROS 2, Nav2, Gazebo, slam_toolbox, AMCL |
+| 🖥️ Backend | Python 3 stdlib (`http.server`, `sqlite3`, `threading`) |
+| 🗄️ Database | SQLite |
+| 🌐 Frontend | HTML/CSS/JS, Chart.js, qrcode.js |
+
+</div>
+
+---
+
+## 🗺️ Roadmap
+
+- [x] Full web ordering + kitchen platform
+- [x] SLAM map + Nav2 simulation
+- [x] OTP delivery + robot fleet + auto-charging
+- [ ] 🤖 Drive a physical robot from web dispatches
+- [ ] 🗺️ Full 15-desk reachable map (extended SLAM)
+- [ ] 📷 On-robot camera + face/QR confirmation at handover
+- [ ] 💳 Real payments (UPI) + WhatsApp/SMS notifications
+- [ ] 🛗 Multi-floor (elevator) navigation
+- [ ] 📈 Demand-based fleet pre-positioning
+
+---
+
+<div align="center">
+
+## 🤝 Connect
+
+[![GitHub](https://img.shields.io/badge/GitHub-dikshantk809--create-181717?style=for-the-badge&logo=github)](https://github.com/dikshantk809-create)
+[![Email](https://img.shields.io/badge/Email-dikshantk809%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:dikshantk809@gmail.com)
+
+<br/>
+
+### ⭐ Robot ne impress kiya? Star de do!
+
+*"From QR scan to desk delivery — fully autonomous."*
+
+**Built with ❤️ & 🤖 by Dikshant** · MIT License
+
+<img src="https://capsule-render.vercel.app/api?type=waving&color=0:22c55e,50:1f6feb,100:22314E&height=110&section=footer" width="100%"/>
 
 </div>
