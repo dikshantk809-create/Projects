@@ -1,225 +1,131 @@
-<div align="center">
+# Project 1 — AI Office Surveillance System
 
-<img src="https://capsule-render.vercel.app/api?type=cylinder&color=0:FF416C,100:FF4B2B&height=220&section=header&text=AI%20Office%20Surveillance&fontSize=52&fontColor=ffffff&animation=fadeIn&desc=Turn%20Ordinary%20CCTV%20into%20Intelligent%20Security&descSize=18&descAlignY=75" width="100%"/>
+Turn ordinary office CCTV/IP cameras into an AI platform for **attendance,
+productivity analytics, and 24/7 security/safety** — running on a Raspberry Pi 5 edge
+node and a FastAPI + PostgreSQL + React backend.
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=24&duration=2800&pause=700&color=FF416C&center=true&vCenter=true&width=720&lines=Face-Based+Attendance+%F0%9F%99%82;Productivity+Analytics+%F0%9F%93%8A;24%2F7+Intrusion+%2B+Safety+Detection+%F0%9F%9A%A8;Fire+%7C+Smoke+%7C+Weapon+%7C+Fall+Detection+%F0%9F%94%A5;Edge+AI+on+Raspberry+Pi+5+%E2%9A%A1" alt="Typing SVG" />
-
-<br/><br/>
-
-![Python](https://img.shields.io/badge/Python_3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![YOLO11](https://img.shields.io/badge/YOLO11-00FFFF?style=for-the-badge&logo=yolo&logoColor=black)
-![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
-![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![Raspberry Pi](https://img.shields.io/badge/Raspberry_Pi_5-A22846?style=for-the-badge&logo=raspberrypi&logoColor=white)
-![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-
-<img src="https://img.shields.io/badge/Edge_AI-⚡_Real--Time-red?style=flat-square"/>
-<img src="https://img.shields.io/badge/Detection-YOLO11_+_ByteTrack-blue?style=flat-square"/>
-<img src="https://img.shields.io/badge/Face_Recognition-InsightFace_ArcFace-purple?style=flat-square"/>
-<img src="https://img.shields.io/badge/Privacy-GDPR_Aware-green?style=flat-square"/>
-
-</div>
+> ⚠️ **Legal first:** this system processes employee **biometric data** and monitors
+> behavior. Consent, notice, retention limits and a DPIA are mandatory (GDPR/BIPA).
+> Prefer **aggregate** productivity analytics over individual scoring. See
+> [`blueprint-docs/05-security-and-compliance.md`](blueprint-docs/05-security-and-compliance.md).
 
 ---
 
-## 🎯 What Is This?
-
-> **Ordinary office CCTV/IP cameras → Intelligent AI platform.**
-> Attendance, productivity analytics & 24/7 security — sab kuch existing cameras se, bina expensive hardware ke.
-
-Ek **edge-first** system: Raspberry Pi 5 (+ AI HAT) har floor par cameras se RTSP stream leta hai, AI models locally chalata hai, aur sirf compact **events** backend ko bhejta hai. Result — low bandwidth, fast alerts, aur data aapke premises par.
-
----
-
-## 🏗️ System Architecture
-
-```mermaid
-flowchart LR
-    A["📷 CCTV / IP Cameras<br/>(RTSP)"] --> B["⚡ Edge Node — Pi 5<br/>YOLO11 Detect → ByteTrack<br/>InsightFace → Pose → Rules"]
-    B -->|"🎬 Evidence Clips"| C[("💾 Local Storage")]
-    B -->|"📨 Events"| D["🚀 FastAPI Backend"]
-    D --> E[("🐘 PostgreSQL<br/>TimescaleDB")]
-    D --> F["🔔 Alerts<br/>Push / SMS / WhatsApp"]
-    D --> G["📊 React Dashboard<br/>+ Grafana"]
-
-    style A fill:#1a1a2e,color:#fff,stroke:#FF416C
-    style B fill:#FF416C,color:#fff,stroke:#FF4B2B,stroke-width:3px
-    style C fill:#16213e,color:#fff,stroke:#0f3460
-    style D fill:#009688,color:#fff,stroke:#00695C
-    style E fill:#4169E1,color:#fff,stroke:#1E3A8A
-    style F fill:#FF9800,color:#000,stroke:#F57C00
-    style G fill:#61DAFB,color:#000,stroke:#0288D1
-```
-
-**Pipeline:** `Capture → Edge Inference → Event Stream → Backend → Datastore → Dashboard/Alerts`
-
----
-
-## ✨ Features
-
-<table>
-<tr>
-<td width="33%" valign="top" align="center">
-
-### 🙂 Smart Attendance
-Face-based entry/exit logging with **InsightFace/ArcFace** — no cards, no proxies. Multi-frame voting + confidence thresholds for accuracy.
-
-</td>
-<td width="33%" valign="top" align="center">
-
-### 📊 Productivity Analytics
-Zone-based presence, activity trends & aggregate insights. **Trends, not verdicts** — privacy-first design.
-
-</td>
-<td width="33%" valign="top" align="center">
-
-### 🚨 24/7 Security
-Intrusion detection with tripwires & zones, night-mode monitoring, and **automatic evidence clip recording**.
-
-</td>
-</tr>
-<tr>
-<td width="33%" valign="top" align="center">
-
-### 🔥 Safety Detection
-Fire, smoke, weapon, fall & violence detection — high recall with human-confirmation workflow.
-
-</td>
-<td width="33%" valign="top" align="center">
-
-### 🔔 Instant Alerts
-Push notifications, SMS, WhatsApp & email fan-out the moment something happens.
-
-</td>
-<td width="33%" valign="top" align="center">
-
-### 📈 Live Dashboard
-React + Grafana dashboards — Live view, Attendance, Productivity, Security & Admin panels.
-
-</td>
-</tr>
-</table>
-
----
-
-## 🧠 AI Stack
-
-| Layer | Technology | Job |
-|-------|-----------|-----|
-| 👁️ Detection | **YOLO11** (Ultralytics) | Person / object detection |
-| 🎯 Tracking | **ByteTrack** | Multi-object tracking across frames |
-| 🙂 Recognition | **InsightFace / ArcFace** | Face embeddings & matching |
-| 🤸 Behavior | **YOLO11-Pose** | Pose-based activity estimation |
-| 📏 Rules Engine | Zones, Tripwires, Debouncer | Attendance, intrusion & safety logic |
-| 🎬 Evidence | OpenCV Recorder | Auto clip recording on incidents |
-
----
-
-## 📂 Project Structure
+## 1. System Architecture
+Edge-first (see [`blueprint-docs/01-system-architecture.md`](blueprint-docs/01-system-architecture.md)).
+Per floor: a Pi 5 + AI HAT+ ingests camera RTSP, runs YOLO11 person/object detection +
+ByteTrack + InsightFace recognition + pose-based behavior, applies zone/attendance/
+safety rules, records evidence clips locally, and streams compact **events** to the
+backend. The FastAPI server persists events to PostgreSQL/TimescaleDB, computes
+attendance & productivity, fans out alerts (push/SMS/WhatsApp/email), and serves the
+React dashboard + Grafana.
 
 ```
-AI-Office-Survillance-System/
-│
-├── ⚡ backend/          → FastAPI: routes, services (attendance, productivity,
-│                          security, recognition), models, workers
-├── 📊 dashboard/        → React dashboard (Live | Attendance | Productivity
-│                          | Security | Admin)
-├── 📘 blueprint-docs/   → Architecture, hardware guide, cost estimation,
-│                          tech stack, security & compliance
-├── 📚 docs/             → API design, training pipeline, deployment,
-│                          Raspberry Pi setup guides
-├── 🚀 run.sh            → One-command startup
-├── 🌱 seed.bat          → Seed demo data
-└── 🛑 stop.bat          → Stop all services
+Cameras → Pi5+Hailo edge (detect→track→face→pose→rules→evidence) → events →
+FastAPI ingest → Postgres/Timescale + MinIO → dashboard / Grafana / alerts
 ```
 
+## 2. Hardware List
+Tier A per floor (Pi 5 8GB + AI HAT+ Hailo-8, Pi Cam 3 and/or 2–4 IP cams, 256GB+
+NVMe, UPS, active cooling, PoE switch). Large buildings → Tier B Jetson Orin.
+Full bill of materials: [`blueprint-docs/02-hardware-guide.md`](blueprint-docs/02-hardware-guide.md).
+
+## 3. Software Stack
+Python 3.12, Ultralytics YOLO11 (→YOLO26), ByteTrack, InsightFace/ArcFace, YOLO11-pose,
+OpenCV, FastAPI, PostgreSQL16+TimescaleDB, Redis, MinIO, React+Vite+Tailwind, Recharts,
+Grafana, Docker. Details: [`blueprint-docs/04-tech-stack.md`](blueprint-docs/04-tech-stack.md).
+
+## 4. Database Design
+See [`db/schema.sql`](db/schema.sql). Core tables: `employees`, `face_embeddings`,
+`cameras`, `zones`, `events` (Timescale hypertable), `attendance` (entry/exit/work
+hours), `behavior_samples`, `productivity_daily`, `security_incidents`,
+`evidence_clips`, `users`/`roles` (RBAC), `audit_log`, `consent`.
+
+## 5. Folder Structure
+```
+project-1-office-surveillance/
+├── backend/app/   FastAPI: api/routes, core(config,security,db), models, schemas,
+│                  services(attendance, productivity, security, recognition), workers
+├── edge/          office_pipeline.py (main edge loop) + pipelines/
+├── ml/            datasets/ training/ export/ (behavior + safety fine-tuning)
+├── dashboard/     React (Live, Attendance, Productivity, Security, Admin)
+├── db/            schema.sql, migrations (Alembic)
+├── deploy/        docker-compose, Dockerfiles, grafana/, k8s/
+└── tests/
+```
+
+## 6. API Design
+REST + WebSocket (full table in [`docs/06-api-design.md`](docs/06-api-design.md)):
+- `POST /api/v1/ingest/events` — edge → backend event ingest (token auth)
+- `POST /api/v1/employees` / `GET /api/v1/employees` — CRUD + enrollment
+- `POST /api/v1/employees/{id}/enroll` — upload face image(s) → embedding
+- `GET /api/v1/attendance?date=&employee=` — attendance + work hours
+- `GET /api/v1/productivity/daily|weekly|monthly` — scores, ranking, charts data
+- `GET /api/v1/security/incidents` · `GET /api/v1/security/{id}/clip`
+- `GET /api/v1/cameras` · `GET /api/v1/cameras/{id}/stream` (WebRTC/HLS)
+- `WS /ws/live` — live events/alerts; `WS /ws/feed/{camera_id}` — annotations
+- `POST /api/v1/subjects/{id}/erase` — right-to-erasure (GDPR)
+
+## 7. Dashboard Design
+React + Tailwind, mobile-responsive. Pages: **Live** (multi-camera grid + real-time
+alerts), **Attendance** (daily roster, entry/exit, work hours), **Productivity**
+(scores, trends, ranking, mobile-usage hours, heatmaps), **Security** (intrusion
+timeline, incident clips, visitor history, alarm/light controls), **Admin** (employees,
+enrollment, cameras, zones, RBAC, retention/consent). Wireframes:
+[`docs/07-dashboard-design.md`](docs/07-dashboard-design.md).
+
+## 8. AI Models Used
+YOLO11 (person/phone/bag + fine-tuned fire/smoke/weapon), ByteTrack tracking,
+InsightFace ArcFace recognition, YOLO11-pose → behavior classifier (working/idle/
+phone/talking/walking/break/meeting) and fall detection, temporal model for violence.
+See [`blueprint-docs/07-ai-models-overview.md`](blueprint-docs/07-ai-models-overview.md).
+
+## 9. Training Pipeline
+[`ml/`](ml/): collect+label (CVAT/Roboflow) → train YOLO fine-tunes (fire/smoke/weapon,
+phone-in-hand) + behavior temporal head on pose sequences → evaluate (PR curves per
+class) → export ONNX→HEF(Hailo)/TensorRT → register in MLflow. Commands in
+[`docs/09-training-pipeline.md`](docs/09-training-pipeline.md). Pretrained COCO + ArcFace
+get you to MVP with no training.
+
+## 10. Deployment Guide
+`cp .env.example .env` → `docker compose -f deploy/docker-compose.yml up -d --build`.
+Edge: flash Pi OS, install HailoRT + deps, run `edge/office_pipeline.py`. Full guide +
+fleet/k3s: [`docs/10-deployment.md`](docs/10-deployment.md) and
+[`blueprint-docs/06-deployment-devops.md`](blueprint-docs/06-deployment-devops.md).
+
+## 11. Cost Estimation
+Tier A ≈ $400–950 one-time + ~$40–135/mo per floor. See
+[`blueprint-docs/03-cost-estimation.md`](blueprint-docs/03-cost-estimation.md).
+
+## 12. Security Design
+RBAC (admin/security/hr/viewer), JWT, TLS/mTLS, edge-only raw video, encrypted storage,
+audit logging of footage access, retention + auto-deletion, right-to-erasure, evidence
+hashing. See [`blueprint-docs/05-security-and-compliance.md`](blueprint-docs/05-security-and-compliance.md).
+
+## 13. Source Code
+Edge loop: [`edge/office_pipeline.py`](edge/office_pipeline.py). Backend:
+[`backend/app/`](backend/app/). Behavior/productivity logic:
+[`backend/app/services/`](backend/app/services/). Built on shared
+[`platform/aicam_platform`](platform/aicam_platform).
+
+## 14. Raspberry Pi Setup
+[`docs/14-raspberry-pi-setup.md`](docs/14-raspberry-pi-setup.md): Pi OS 64-bit, AI HAT+
+firmware + HailoRT, Python env, camera enable, model HEF, systemd service, auto-start.
+
+## 15. Step-by-Step Implementation Plan
+[`docs/15-implementation-plan.md`](docs/15-implementation-plan.md): MVP (attendance on
+one camera) → Beta (productivity + security + multi-cam + alerts) → Production (fleet,
+HA, compliance, accuracy validation).
+
+## 16. Future Enhancements
+Multi-site federation, anti-spoofing/liveness, mask/PPE compliance, desk-occupancy &
+space optimization, Slack/Teams attendance bot, anomaly detection, on-device LLM
+incident summaries, access-control (door) integration.
+
 ---
-
-## ⚙️ Quick Start
-
+### Quick start
 ```bash
-# Clone the repo
-git clone https://github.com/dikshantk809-create/Projects.git
-cd Projects/AI-Office-Survillance-System
-
-# Linux / macOS
-./run.sh
-
-# Windows
-seed.bat     # seed demo data
-run.sh       # via Git Bash / WSL
-stop.bat     # stop services
+cp .env.example .env
+docker compose -f deploy/docker-compose.yml up -d --build
+# API docs: http://localhost:8001/docs   Dashboard: http://localhost:5174
 ```
-
-📖 **Detailed setup:** dekho [`docs/`](./docs) — Raspberry Pi setup, deployment & training pipeline guides.
-
----
-
-## 🎛️ Hardware (Per Floor)
-
-| Component | Spec |
-|-----------|------|
-| 🧠 Edge Node | Raspberry Pi 5 (8GB) + AI HAT+ (Hailo-8) |
-| 📷 Cameras | Pi Camera 3 / 2–4 IP cameras (RTSP) |
-| 💾 Storage | 256GB+ NVMe |
-| 🔌 Power | UPS + PoE switch + active cooling |
-| 🏢 Scale-up | Jetson Orin (large buildings) |
-
----
-
-## 📊 Realistic Accuracy
-
-| Task | Accuracy | Note |
-|------|----------|------|
-| Face recognition | ~99%+ | Well-lit frontal faces; multi-frame voting |
-| Person detection | 90–97% | YOLO11 + ByteTrack indoor scenes |
-| Behavior proxies | 70–90% | Reported as **trends**, not verdicts |
-| Safety detection | High recall | Human confirmation before action |
-
----
-
-## 🔐 Privacy & Compliance First
-
-> ⚠️ Ye system **biometric data** process karta hai. Deployment se pehle:
-
-- ✅ Employee **consent & notice** mandatory
-- ✅ Data **retention limits** + audit logging
-- ✅ **DPIA** (GDPR/BIPA compliance)
-- ✅ Aggregate analytics > individual scoring
-- 📘 Full guide: [`blueprint-docs/05-security-and-compliance.md`](./blueprint-docs/05-security-and-compliance.md)
-
----
-
-## 🗺️ Roadmap
-
-- [x] Edge pipeline — detect → track → face → pose → rules
-- [x] Evidence clip recording
-- [x] FastAPI backend + event ingest
-- [x] React dashboard + Grafana
-- [ ] YOLO26 upgrade
-- [ ] Custom behavior model fine-tuning
-- [ ] Multi-site cloud sync
-- [ ] Mobile app for alerts
-
----
-
-<div align="center">
-
-## 🤝 Connect
-
-[![GitHub](https://img.shields.io/badge/GitHub-dikshantk809--create-181717?style=for-the-badge&logo=github)](https://github.com/dikshantk809-create)
-[![Email](https://img.shields.io/badge/Email-dikshantk809%40gmail.com-EA4335?style=for-the-badge&logo=gmail&logoColor=white)](mailto:dikshantk809@gmail.com)
-
-<br/>
-
-### ⭐ Star the repo if this project impressed you!
-
-*"Security that thinks, cameras that understand."*
-
-**Built with ❤️ & 🧠 by Dikshant**
-
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:FF4B2B,100:FF416C&height=110&section=footer" width="100%"/>
-
-</div>
