@@ -1,0 +1,17 @@
+numpy>=1.26
+opencv-python-headless>=4.9
+pydantic>=2.6
+pydantic-settings>=2.2
+loguru>=0.7
+
+[alerts]
+httpx>=0.27
+twilio>=9.0
+
+[detect]
+ultralytics>=8.3
+supervision>=0.20
+
+[face]
+insightface>=0.7
+onnxruntime>=1.17

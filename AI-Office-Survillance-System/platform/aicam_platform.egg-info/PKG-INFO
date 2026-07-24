@@ -1,0 +1,19 @@
+Metadata-Version: 2.4
+Name: aicam-platform
+Version: 0.1.0
+Summary: Shared edge-AI + cloud platform for the AI Camera Systems monorepo
+Requires-Python: >=3.11
+Requires-Dist: numpy>=1.26
+Requires-Dist: opencv-python-headless>=4.9
+Requires-Dist: pydantic>=2.6
+Requires-Dist: pydantic-settings>=2.2
+Requires-Dist: loguru>=0.7
+Provides-Extra: detect
+Requires-Dist: ultralytics>=8.3; extra == "detect"
+Requires-Dist: supervision>=0.20; extra == "detect"
+Provides-Extra: face
+Requires-Dist: insightface>=0.7; extra == "face"
+Requires-Dist: onnxruntime>=1.17; extra == "face"
+Provides-Extra: alerts
+Requires-Dist: httpx>=0.27; extra == "alerts"
+Requires-Dist: twilio>=9.0; extra == "alerts"
