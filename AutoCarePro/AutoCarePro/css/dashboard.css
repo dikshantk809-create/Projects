@@ -1,0 +1,295 @@
+/* ==========================================================================
+   AutoCare Pro — Dashboard
+   ========================================================================== */
+
+.greeting {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-wider);
+  text-transform: uppercase;
+  color: var(--accent-red-bright);
+}
+
+.metric-card {
+  position: relative;
+  padding: var(--sp-5);
+  min-height: 132px;
+}
+
+.metric-card::after {
+  /* hairline accent that lights up on hover */
+  content: "";
+  position: absolute;
+  left: var(--sp-5);
+  right: var(--sp-5);
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent-red), transparent);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform var(--dur-slow) var(--ease-out);
+}
+
+.metric-card:hover::after {
+  transform: scaleX(1);
+}
+
+/* ------------------------- Primary vehicle hero -------------------------- */
+
+.hero-vehicle {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  padding: var(--sp-6);
+  min-height: 340px;
+  background:
+    radial-gradient(700px 320px at 88% 8%, rgba(225, 6, 0, 0.16), transparent 68%),
+    linear-gradient(150deg, var(--surface-elevated), var(--surface) 55%);
+  border: 1px solid var(--border);
+  border-radius: var(--r-xl);
+  overflow: hidden;
+}
+
+.hero-vehicle__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  position: relative;
+  z-index: 1;
+}
+
+.hero-vehicle__name {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 4.4vw, var(--fs-4xl));
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-top: var(--sp-2);
+}
+
+.hero-vehicle__spec {
+  margin-top: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+}
+
+.hero-vehicle__art {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  padding: var(--sp-2) 0;
+}
+
+.hero-vehicle__art svg {
+  width: min(100%, 460px);
+  height: auto;
+  filter: drop-shadow(0 18px 34px rgba(0, 0, 0, 0.55));
+}
+
+.hero-vehicle__foot {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--sp-4);
+}
+
+/* --------------------------- Vehicle health ------------------------------ */
+
+.health-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+  padding: var(--sp-6);
+}
+
+.health-hero {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-5);
+}
+
+.health-hero__value {
+  font-family: var(--font-display);
+  font-size: var(--fs-5xl);
+  font-weight: 700;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+}
+
+.health-hero__value sup {
+  font-size: 0.32em;
+  vertical-align: super;
+  color: var(--text-muted);
+  margin-left: 2px;
+}
+
+.health-ring {
+  flex: none;
+}
+
+.health-bars {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-4);
+}
+
+.health-note {
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  line-height: 1.6;
+  padding-top: var(--sp-3);
+  border-top: 1px dashed var(--border);
+}
+
+/* ------------------------------ Timeline --------------------------------- */
+
+.timeline {
+  position: relative;
+  padding-left: var(--sp-6);
+}
+
+.timeline::before {
+  content: "";
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: linear-gradient(180deg, var(--border-strong), transparent);
+}
+
+.timeline__item {
+  position: relative;
+  padding-bottom: var(--sp-5);
+}
+
+.timeline__item:last-child {
+  padding-bottom: 0;
+}
+
+.timeline__dot {
+  position: absolute;
+  left: calc(-1 * var(--sp-6) + 2px);
+  top: 4px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--text-muted);
+}
+
+.timeline__item--success .timeline__dot { border-color: var(--success); }
+.timeline__item--warning .timeline__dot { border-color: var(--warning); }
+.timeline__item--critical .timeline__dot {
+  border-color: var(--critical);
+  box-shadow: 0 0 10px rgba(255, 69, 58, 0.55);
+}
+
+.timeline__title {
+  font-family: var(--font-display);
+  font-size: var(--fs-md);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.timeline__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-3);
+  margin-top: 4px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+}
+
+.timeline__next {
+  margin-top: var(--sp-2);
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+/* ------------------------- Environment strip ----------------------------- */
+
+.env-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--sp-3);
+}
+
+.env-cell {
+  padding: var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-soft);
+}
+
+.env-cell__label {
+  font-family: var(--font-mono);
+  font-size: var(--fs-3xs);
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.env-cell__value {
+  margin-top: 4px;
+  font-family: var(--font-display);
+  font-size: var(--fs-xl);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.env-cell__sub {
+  font-size: var(--fs-3xs);
+  color: var(--text-secondary);
+}
+
+/* --------------------------- Quick actions ------------------------------- */
+
+.quick-actions {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--sp-3);
+}
+
+.quick-action {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-soft);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  text-align: left;
+  transition: background var(--dur-fast), color var(--dur-fast),
+    border-color var(--dur-fast), transform var(--dur-fast);
+}
+
+.quick-action:hover {
+  background: var(--surface-hover);
+  border-color: var(--border-strong);
+  color: var(--text-primary);
+  transform: translateY(-2px);
+}
+
+.quick-action svg {
+  width: 17px;
+  height: 17px;
+  color: var(--accent-red-bright);
+  flex: none;
+}

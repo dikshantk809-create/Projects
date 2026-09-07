@@ -1,0 +1,86 @@
+AUTOCARE PRO - Smart Vehicle Maintenance System (SVMS)
+=======================================================
+
+>>> STEP 0 - EXTRACT THIS ZIP FIRST <<<
+
+Right-click AutoCarePro.zip  >  "Extract All..."  >  Extract.
+Then open the extracted AutoCarePro folder.
+
+Running anything straight out of the ZIP will NOT work: Windows copies
+only the one file you clicked into a temp folder and leaves the rest
+behind. If the address bar shows a path containing ".zip", you have not
+extracted yet.
+
+
+HOW TO RUN (pick one)
+---------------------
+
+1. EASIEST - one file does everything
+   Double-click:  Run-AutoCare-Pro.bat            (Windows)
+                  ./run.sh                        (macOS / Linux)
+
+   It asks one question, then does the rest:
+       [1] run on this computer  (default - just press Enter or wait)
+       [2] run + public https link anyone can open
+       [3] open the single file, no server
+
+   It starts a small local server and opens your browser automatically.
+   Uses Node.js if you have it, otherwise Python. Nothing to install.
+   Keep the black console window open while you use the app.
+   Press Ctrl + C (or close the window) to stop it.
+
+2. NO RUNTIME AT ALL
+   Double-click:  AutoCare-Pro.html
+
+   The entire application in one self-contained file. Everything works -
+   all seven screens, all CRUD, all algorithms, all charts, and your data
+   is saved in the browser. The only thing missing is the PWA layer
+   (install prompt + offline service worker), because browsers refuse to
+   register a service worker on file:// URLs.
+
+3. VS CODE
+   Open the AutoCarePro folder, install the "Live Server" extension,
+   right-click index.html  >  "Open with Live Server".
+
+
+SHARING IT WITH OTHER DEVICES
+-----------------------------
+
+SAME WI-FI (phone + laptop)
+   Run Run-AutoCare-Pro.bat. The console prints a "Same Wi-Fi" address
+   like http://192.168.1.7:5500/index.html - type that into your phone.
+
+PUBLIC LINK FROM THIS LAPTOP
+   Run Run-AutoCare-Pro.bat and press [2]. It downloads cloudflared once
+   (~40 MB, no account) and prints a public https link that anyone can
+   open while the window stays open.
+
+PERMANENT FREE HOSTING (recommended for submission / CV)
+   The app is 100% static, so drag the extracted AutoCarePro folder onto
+   https://app.netlify.com/drop and you get a live URL in seconds - and it
+   stays online even when your laptop is off. GitHub Pages works too.
+
+IMPORTANT: data is stored in each visitor's own browser. Everyone gets the
+full app and their own copy of the demo data - they do NOT see your
+vehicles. It is a shared application, not a shared database.
+Full details in docs/deploy.md.
+
+
+FIRST LAUNCH
+------------
+Two demo vehicles with full service, expense, journey and wash history are
+seeded automatically so nothing looks empty. Every generated row is tagged
+DEMO DATA in the UI. Your own records are never overwritten.
+To start clean:  Settings > Data management > Erase everything.
+
+
+DOCUMENTATION
+-------------
+README.md               Full project documentation
+docs/algorithms.md      The three algorithms with worked examples
+docs/architecture.md    How the code is organised
+docs/storage.md         Database schema and migration
+docs/api-integration.md Adding a real AQI / weather API
+docs/viva-guide.md      Demo script + likely examiner questions
+docs/testing.md         Test checklist and automated results
+docs/roadmap.md         Future enhancements

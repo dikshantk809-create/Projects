@@ -1,0 +1,178 @@
+/* ==========================================================================
+   AutoCare Pro — Base typography & shared page furniture
+   ========================================================================== */
+
+h1, h2, h3, h4, h5 {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+h3 {
+  font-size: var(--fs-md);
+}
+
+p {
+  color: var(--text-secondary);
+}
+
+strong {
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  padding: 1px 5px;
+  border-radius: var(--r-xs);
+  background: var(--surface-elevated);
+  border: 1px solid var(--border-soft);
+  color: var(--text-secondary);
+}
+
+/* Display numerals used across instrumentation readouts. */
+.display-num {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 0.92;
+  letter-spacing: 0.01em;
+}
+
+/* Corner ticks — subtle automotive framing on hero surfaces. */
+.corner-ticks::after {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  pointer-events: none;
+  background:
+    linear-gradient(var(--border-strong), var(--border-strong)) left top / 12px 1px no-repeat,
+    linear-gradient(var(--border-strong), var(--border-strong)) left top / 1px 12px no-repeat,
+    linear-gradient(var(--border-strong), var(--border-strong)) right top / 12px 1px no-repeat,
+    linear-gradient(var(--border-strong), var(--border-strong)) right top / 1px 12px no-repeat,
+    linear-gradient(var(--border-strong), var(--border-strong)) left bottom / 12px 1px no-repeat,
+    linear-gradient(var(--border-strong), var(--border-strong)) left bottom / 1px 12px no-repeat,
+    linear-gradient(var(--border-strong), var(--border-strong)) right bottom / 12px 1px no-repeat,
+    linear-gradient(var(--border-strong), var(--border-strong)) right bottom / 1px 12px no-repeat;
+  opacity: 0.55;
+}
+
+/* Coordinate / telemetry micro-caption placed on hero cards. */
+.telemetry-caption {
+  position: absolute;
+  right: var(--sp-4);
+  bottom: var(--sp-3);
+  font-family: var(--font-mono);
+  font-size: var(--fs-3xs);
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+/* Filter bar shared by list pages. */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+}
+
+.toolbar .select,
+.toolbar .input {
+  min-height: 38px;
+  width: auto;
+  min-width: 150px;
+}
+
+.toolbar__spacer {
+  flex: 1;
+}
+
+.count-note {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  color: var(--text-muted);
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+}
+
+/* Demo-data provenance marker. Seeded records carry this so a reviewer can
+   always tell generated sample data from records they created themselves. */
+.demo-flag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 7px;
+  border-radius: var(--r-sm);
+  background: rgba(74, 168, 255, 0.1);
+  border: 1px solid rgba(74, 168, 255, 0.28);
+  color: var(--info);
+  font-family: var(--font-mono);
+  font-size: var(--fs-3xs);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Alerts list (dashboard + notifications panel) */
+.alert-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+}
+
+.alert {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border-radius: var(--r-md);
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--text-muted);
+  transition: background var(--dur-fast), transform var(--dur-fast);
+}
+
+.alert:hover {
+  background: var(--surface-elevated);
+}
+
+.alert--critical { border-left-color: var(--critical); }
+.alert--warning  { border-left-color: var(--warning); }
+.alert--info     { border-left-color: var(--info); }
+.alert--success  { border-left-color: var(--success); }
+
+.alert__icon {
+  flex: none;
+  width: 30px;
+  height: 30px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-sm);
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+}
+
+.alert__icon svg { width: 15px; height: 15px; }
+.alert--critical .alert__icon { color: var(--critical); }
+.alert--warning  .alert__icon { color: var(--warning); }
+.alert--info     .alert__icon { color: var(--info); }
+.alert--success  .alert__icon { color: var(--success); }
+
+.alert__body { flex: 1; min-width: 0; }
+
+.alert__title {
+  font-size: var(--fs-sm);
+  font-weight: 600;
+}
+
+.alert__meta {
+  margin-top: 2px;
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+}
+
+.alert__action {
+  flex: none;
+}

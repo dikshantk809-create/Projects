@@ -1,0 +1,135 @@
+/* ==========================================================================
+   AutoCare Pro — Design Tokens
+   Single source of truth for colour, type, spacing, elevation and motion.
+   Every other stylesheet consumes these variables; no raw hex values should
+   appear outside this file (except inside gradients that mix tokens).
+   ========================================================================== */
+
+:root {
+  /* ---------- Surfaces ---------- */
+  --bg-primary: #070809;
+  --bg-secondary: #0d0f12;
+  --surface: #111419;
+  --surface-elevated: #171a1f;
+  --surface-hover: #1d2127;
+  --surface-sunken: #0a0c0e;
+
+  /* ---------- Lines ---------- */
+  --border: #282d35;
+  --border-soft: #1c2027;
+  --border-strong: #39404b;
+
+  /* ---------- Brand accent ---------- */
+  --accent-red: #e10600;
+  --accent-red-bright: #ff2b24;
+  --accent-red-dim: rgba(225, 6, 0, 0.14);
+  --accent-red-glow: rgba(225, 6, 0, 0.38);
+
+  /* ---------- Status ---------- */
+  --success: #39ff88;
+  --success-dim: rgba(57, 255, 136, 0.12);
+  --warning: #ff9d2e;
+  --warning-dim: rgba(255, 157, 46, 0.12);
+  --critical: #ff453a;
+  --critical-dim: rgba(255, 69, 58, 0.12);
+  --info: #4aa8ff;
+  --info-dim: rgba(74, 168, 255, 0.12);
+
+  /* ---------- Text ---------- */
+  --text-primary: #f4f6f8;
+  --text-secondary: #a1a8b2;
+  --text-muted: #626b76;
+  --text-inverse: #070809;
+
+  /* ---------- Data-visualisation palette ----------
+     Sequenced for maximum separation on a near-black ground. */
+  --viz-1: #e10600;
+  --viz-2: #4aa8ff;
+  --viz-3: #39ff88;
+  --viz-4: #ff9d2e;
+  --viz-5: #a06bff;
+  --viz-6: #22d3ee;
+  --viz-7: #f5d90a;
+  --viz-8: #7d8794;
+
+  /* ---------- Typography ---------- */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Barlow Condensed", "Oswald", "Inter", "Arial Narrow", sans-serif;
+  --font-mono: "JetBrains Mono", "SF Mono", ui-monospace, "Cascadia Mono", Menlo,
+    Consolas, monospace;
+
+  --fs-3xs: 0.625rem;   /* 10px — micro telemetry labels */
+  --fs-2xs: 0.6875rem;  /* 11px — uppercase eyebrow labels */
+  --fs-xs: 0.75rem;     /* 12px */
+  --fs-sm: 0.8125rem;   /* 13px */
+  --fs-base: 0.875rem;  /* 14px — body default */
+  --fs-md: 1rem;        /* 16px */
+  --fs-lg: 1.125rem;    /* 18px */
+  --fs-xl: 1.375rem;    /* 22px */
+  --fs-2xl: 1.75rem;    /* 28px */
+  --fs-3xl: 2.25rem;    /* 36px */
+  --fs-4xl: 3rem;       /* 48px */
+  --fs-5xl: 4rem;       /* 64px — hero instrumentation readouts */
+
+  --track-wide: 0.14em;
+  --track-wider: 0.22em;
+
+  /* ---------- Spacing scale (4px base) ---------- */
+  --sp-1: 0.25rem;
+  --sp-2: 0.5rem;
+  --sp-3: 0.75rem;
+  --sp-4: 1rem;
+  --sp-5: 1.25rem;
+  --sp-6: 1.5rem;
+  --sp-8: 2rem;
+  --sp-10: 2.5rem;
+  --sp-12: 3rem;
+  --sp-16: 4rem;
+
+  /* ---------- Radii ---------- */
+  --r-xs: 3px;
+  --r-sm: 5px;
+  --r-md: 8px;
+  --r-lg: 12px;
+  --r-xl: 16px;
+  --r-pill: 999px;
+
+  /* ---------- Elevation ---------- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.6);
+  --shadow-red: 0 0 0 1px rgba(225, 6, 0, 0.35), 0 8px 28px rgba(225, 6, 0, 0.2);
+
+  /* ---------- Layout ---------- */
+  --sidebar-w: 252px;
+  --topbar-h: 64px;
+  --content-max: 1560px;
+
+  /* ---------- Motion ---------- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --dur-fast: 120ms;
+  --dur-base: 220ms;
+  --dur-slow: 420ms;
+  --dur-page: 320ms;
+
+  /* ---------- Z-index ladder ---------- */
+  --z-base: 1;
+  --z-sticky: 40;
+  --z-drawer: 60;
+  --z-modal: 80;
+  --z-toast: 90;
+  --z-splash: 100;
+}
+
+/* Users who ask for less motion get a near-instant interface. */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-fast: 1ms;
+    --dur-base: 1ms;
+    --dur-slow: 1ms;
+    --dur-page: 1ms;
+  }
+}

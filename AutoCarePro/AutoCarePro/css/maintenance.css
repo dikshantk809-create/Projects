@@ -1,0 +1,111 @@
+/* ==========================================================================
+   AutoCare Pro — Maintenance module
+   ========================================================================== */
+
+.service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(268px, 1fr));
+  gap: var(--sp-3);
+  align-items: start;
+}
+
+.service-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+  padding: var(--sp-4);
+  border-radius: var(--r-md);
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--border-strong);
+  transition: transform var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
+}
+
+.service-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--border-strong);
+}
+
+.service-card--overdue  { border-left-color: var(--critical); }
+.service-card--due-soon { border-left-color: var(--warning); }
+.service-card--upcoming { border-left-color: var(--success); }
+.service-card--unknown  { border-left-color: var(--text-muted); }
+
+.service-card__head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--sp-3);
+}
+
+.service-card__type {
+  font-family: var(--font-display);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  line-height: 1.15;
+}
+
+.service-card__remaining {
+  display: flex;
+  align-items: baseline;
+  gap: var(--sp-2);
+}
+
+.service-card__remaining .n {
+  font-family: var(--font-display);
+  font-size: var(--fs-2xl);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.service-card__remaining .u {
+  font-family: var(--font-mono);
+  font-size: var(--fs-3xs);
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.service-card__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2) var(--sp-4);
+  font-family: var(--font-mono);
+  font-size: var(--fs-3xs);
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+/* Interval consumption bar */
+.service-card .bar__track {
+  height: 5px;
+}
+
+/* Maintenance record list */
+.record-type {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-weight: 600;
+}
+
+.record-type__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--accent-red);
+  flex: none;
+}
+
+.maintenance-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--sp-3);
+  margin-bottom: var(--sp-5);
+}

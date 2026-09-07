@@ -1,0 +1,263 @@
+/* ==========================================================================
+   AutoCare Pro — Motion system
+   Only transform/opacity are animated so every effect stays on the GPU.
+   ========================================================================== */
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes page-in {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translate3d(0, 14px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes modal-in {
+  from { opacity: 0; transform: translate3d(0, 16px, 0) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes modal-out {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translate3d(0, 8px, 0) scale(0.985); }
+}
+
+@keyframes toast-in {
+  from { opacity: 0; transform: translate3d(0, 18px, 0) scale(0.97); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes toast-out {
+  from { opacity: 1; transform: none; }
+  to   { opacity: 0; transform: translate3d(24px, 0, 0); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%      { opacity: 0.35; transform: scale(0.8); }
+}
+
+@keyframes nav-bar-grow {
+  from { height: 0; }
+  to   { height: 20px; }
+}
+
+@keyframes sweep-x {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(320%); }
+}
+
+@keyframes grid-drift {
+  0%   { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(34px, 34px, 0); }
+}
+
+/* Staggered entrance helper: add .stagger to a grid, children fade up in turn */
+.stagger > * {
+  animation: rise-in var(--dur-slow) var(--ease-out) both;
+}
+.stagger > *:nth-child(1) { animation-delay: 0ms; }
+.stagger > *:nth-child(2) { animation-delay: 45ms; }
+.stagger > *:nth-child(3) { animation-delay: 90ms; }
+.stagger > *:nth-child(4) { animation-delay: 135ms; }
+.stagger > *:nth-child(5) { animation-delay: 180ms; }
+.stagger > *:nth-child(6) { animation-delay: 225ms; }
+.stagger > *:nth-child(7) { animation-delay: 270ms; }
+.stagger > *:nth-child(8) { animation-delay: 315ms; }
+
+/* ============================== Splash screen ============================= */
+
+.splash {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-splash);
+  display: grid;
+  place-items: center;
+  background: var(--bg-primary);
+  overflow: hidden;
+  transition: opacity 420ms var(--ease-out), visibility 420ms;
+}
+
+.splash.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.splash__grid {
+  position: absolute;
+  inset: -40px;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 34px 34px;
+  mask-image: radial-gradient(circle at 50% 50%, #000 10%, transparent 72%);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 10%, transparent 72%);
+  opacity: 0;
+  animation: fade-in 500ms var(--ease-out) 60ms forwards,
+    grid-drift 9s linear infinite;
+}
+
+.splash__glow {
+  position: absolute;
+  width: 620px;
+  height: 620px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(225, 6, 0, 0.16), transparent 65%);
+  filter: blur(20px);
+  opacity: 0;
+  animation: fade-in 900ms var(--ease-out) 180ms forwards;
+}
+
+.splash__inner {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-5);
+  text-align: center;
+  padding: var(--sp-6);
+}
+
+.splash__logo {
+  opacity: 0;
+  transform: translateY(12px);
+  animation: rise-in 620ms var(--ease-out) 220ms forwards;
+}
+
+.splash__logo svg {
+  width: 72px;
+  height: 72px;
+}
+
+.splash__wordmark {
+  font-family: var(--font-display);
+  font-size: clamp(2.6rem, 9vw, 4rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 0.95;
+  text-transform: uppercase;
+  opacity: 0;
+  animation: rise-in 620ms var(--ease-out) 340ms forwards;
+}
+
+.splash__wordmark span {
+  display: block;
+  font-size: 0.42em;
+  color: var(--accent-red-bright);
+  letter-spacing: 0.28em;
+  margin-top: 6px;
+}
+
+.splash__line {
+  width: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-red-bright), transparent);
+  animation: splash-line 700ms var(--ease-out) 440ms forwards;
+}
+
+@keyframes splash-line {
+  to { width: 260px; }
+}
+
+.splash__title {
+  font-family: var(--font-mono);
+  font-size: var(--fs-2xs);
+  letter-spacing: var(--track-wider);
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  opacity: 0;
+  animation: fade-in 500ms var(--ease-out) 620ms forwards;
+}
+
+.splash__loader {
+  position: relative;
+  width: 220px;
+  height: 2px;
+  border-radius: var(--r-pill);
+  background: var(--surface-elevated);
+  overflow: hidden;
+  opacity: 0;
+  animation: fade-in 400ms var(--ease-out) 720ms forwards;
+}
+
+.splash__loader::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 34%;
+  border-radius: inherit;
+  background: var(--accent-red-bright);
+  box-shadow: 0 0 12px var(--accent-red-glow);
+  animation: sweep-x 1.1s var(--ease-in-out) infinite;
+}
+
+.splash__status {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  font-family: var(--font-mono);
+  font-size: var(--fs-3xs);
+  letter-spacing: var(--track-wide);
+  text-transform: uppercase;
+  color: var(--text-muted);
+  opacity: 0;
+  animation: fade-in 400ms var(--ease-out) 820ms forwards;
+}
+
+.splash__status .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px rgba(57, 255, 136, 0.7);
+  animation: pulse-dot 1.6s var(--ease-in-out) infinite;
+}
+
+/* Reduced motion: show the splash statically and get out of the way fast. */
+@media (prefers-reduced-motion: reduce) {
+  .splash__grid,
+  .splash__glow,
+  .splash__logo,
+  .splash__wordmark,
+  .splash__title,
+  .splash__loader,
+  .splash__status {
+    animation: none !important;
+    opacity: 1;
+    transform: none;
+  }
+  .splash__line {
+    width: 260px;
+    animation: none;
+  }
+}
+
+/* Count-up numbers reserve their space so the layout never jumps. */
+.counter {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Manual "reduce motion" switch from Settings — same effect as the OS setting,
+   applied to <html> by app.js. */
+.reduce-motion *,
+.reduce-motion *::before,
+.reduce-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}

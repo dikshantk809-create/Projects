@@ -1,0 +1,325 @@
+/* ==========================================================================
+   AutoCare Pro — Responsive behaviour
+   Breakpoints: 1280 / 1024 / 768 / 560 / 380.
+   Mobile is a distinct experience (drawer + bottom bar), not a squeezed
+   desktop layout.
+   ========================================================================== */
+
+@media (max-width: 1280px) {
+  :root {
+    --sidebar-w: 224px;
+  }
+  .content {
+    padding: var(--sp-6) var(--sp-5) var(--sp-16);
+  }
+}
+
+/* -------------------- Tablet & below: off-canvas drawer ------------------ */
+
+@media (max-width: 1024px) {
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: min(292px, 84vw);
+    transform: translate3d(-102%, 0, 0);
+    transition: transform var(--dur-base) var(--ease-out);
+    box-shadow: none;
+  }
+
+  .sidebar.is-open {
+    transform: none;
+    box-shadow: var(--shadow-lg);
+  }
+
+  .drawer-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: calc(var(--z-drawer) - 1);
+    background: rgba(3, 4, 5, 0.66);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity var(--dur-base), visibility var(--dur-base);
+  }
+
+  .drawer-backdrop.is-open {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  .topbar {
+    display: none;
+  }
+
+  .mobile-topbar {
+    display: flex;
+  }
+
+  .mobile-topbar__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--sp-2);
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .mobile-topbar__brand svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .mobile-topbar__spacer {
+    flex: 1;
+  }
+}
+
+/* ------------------------- Phones: bottom navigation --------------------- */
+
+@media (max-width: 768px) {
+  .content {
+    padding: var(--sp-5) var(--sp-4) calc(72px + var(--sp-8));
+  }
+
+  .page-head h1 {
+    font-size: var(--fs-2xl);
+  }
+
+  .page-head__actions {
+    width: 100%;
+  }
+
+  .page-head__actions .btn {
+    flex: 1;
+  }
+
+  .mobile-nav {
+    display: flex;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: var(--z-sticky);
+    justify-content: space-around;
+    padding: 6px 4px calc(6px + env(safe-area-inset-bottom, 0px));
+    background: rgba(10, 12, 14, 0.94);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-top: 1px solid var(--border-soft);
+  }
+
+  .mobile-nav__item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    flex: 1;
+    min-height: 54px;
+    padding: 8px 2px;
+    border-radius: var(--r-md);
+    color: var(--text-muted);
+    font-size: var(--fs-3xs);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color var(--dur-fast);
+  }
+
+  .mobile-nav__item svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .mobile-nav__item.is-active {
+    color: var(--accent-red-bright);
+  }
+
+  .mobile-nav__item.is-active::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    width: 22px;
+    height: 2px;
+    border-radius: var(--r-pill);
+    background: var(--accent-red-bright);
+    box-shadow: 0 0 10px var(--accent-red-glow);
+  }
+
+  /* Cards go full-bleed-ish and single column */
+  .grid--metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .grid--cards,
+  .grid--2,
+  .grid--3 {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-vehicle {
+    padding: var(--sp-5);
+    min-height: 0;
+  }
+
+  .health-hero {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .modal-root {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal,
+  .modal--sm,
+  .modal--lg {
+    width: 100%;
+    max-height: 92dvh;
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+    animation: sheet-in var(--dur-base) var(--ease-out) both;
+  }
+
+  .modal__foot {
+    border-radius: 0;
+    padding-bottom: calc(var(--sp-4) + env(safe-area-inset-bottom, 0px));
+  }
+
+  .modal__foot .btn {
+    flex: 1;
+  }
+
+  .toast-stack {
+    left: var(--sp-3);
+    right: var(--sp-3);
+    bottom: calc(72px + var(--sp-3));
+    width: auto;
+  }
+
+  .palette {
+    padding: var(--sp-4);
+    align-items: end;
+  }
+
+  .table {
+    min-width: 560px;
+  }
+
+  .chart-box {
+    height: 230px;
+  }
+}
+
+@keyframes sheet-in {
+  from { opacity: 0; transform: translate3d(0, 32px, 0); }
+  to   { opacity: 1; transform: none; }
+}
+
+@media (max-width: 560px) {
+  .content {
+    padding: var(--sp-4) var(--sp-3) calc(72px + var(--sp-8));
+  }
+
+  .grid--metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--sp-3);
+  }
+
+  .metric__value {
+    font-size: var(--fs-2xl);
+  }
+
+  .metric-card {
+    min-height: 108px;
+    padding: var(--sp-4);
+  }
+
+  .metric__icon {
+    display: none;
+  }
+
+  .vehicle-card__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .health-hero__value {
+    font-size: var(--fs-4xl);
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .modal__head,
+  .modal__body,
+  .modal__foot {
+    padding-left: var(--sp-4);
+    padding-right: var(--sp-4);
+  }
+
+  .journey__stats {
+    width: 100%;
+    margin-left: 0;
+  }
+}
+
+/* Smallest supported width — 320px. Nothing may overflow horizontally. */
+@media (max-width: 380px) {
+  .grid--metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .page-head h1 {
+    font-size: var(--fs-xl);
+  }
+
+  .vehicle-card__actions .btn {
+    flex: 1 1 100%;
+  }
+
+  .mobile-nav__item {
+    font-size: 9px;
+  }
+
+  .gauge {
+    width: min(240px, 78vw);
+  }
+}
+
+/* --------------------------- Print (report view) ------------------------- */
+
+@media print {
+  .sidebar,
+  .topbar,
+  .mobile-topbar,
+  .mobile-nav,
+  .toast-stack,
+  .page-head__actions {
+    display: none !important;
+  }
+  .app-shell {
+    grid-template-columns: 1fr;
+  }
+  body {
+    background: #fff;
+    color: #000;
+  }
+  .card,
+  .chart-card {
+    border-color: #ccc;
+    background: #fff;
+  }
+}

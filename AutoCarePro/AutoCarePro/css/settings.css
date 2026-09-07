@@ -1,0 +1,143 @@
+/* ==========================================================================
+   AutoCare Pro — Settings
+   ========================================================================== */
+
+.settings-layout {
+  display: grid;
+  grid-template-columns: 210px minmax(0, 1fr);
+  gap: var(--sp-6);
+  align-items: start;
+}
+
+.settings-nav {
+  position: sticky;
+  top: calc(var(--topbar-h) + var(--sp-4));
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.settings-nav button {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-3);
+  padding: var(--sp-3);
+  border-radius: var(--r-md);
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  text-align: left;
+  transition: background var(--dur-fast), color var(--dur-fast);
+}
+
+.settings-nav button svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.settings-nav button:hover {
+  background: var(--surface);
+  color: var(--text-primary);
+}
+
+.settings-nav button.is-active {
+  background: var(--accent-red-dim);
+  color: var(--text-primary);
+  box-shadow: inset 2px 0 0 var(--accent-red-bright);
+}
+
+.settings-panels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-5);
+}
+
+.settings-section {
+  scroll-margin-top: calc(var(--topbar-h) + var(--sp-4));
+}
+
+.setting-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-4);
+  padding: var(--sp-4) 0;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.setting-row:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.setting-row__info {
+  flex: 1 1 260px;
+  min-width: 0;
+}
+
+.setting-row__title {
+  font-size: var(--fs-base);
+  font-weight: 600;
+}
+
+.setting-row__desc {
+  margin-top: 3px;
+  font-size: var(--fs-xs);
+  color: var(--text-muted);
+  max-width: 60ch;
+}
+
+.setting-row__control {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--sp-2);
+  align-items: center;
+}
+
+.setting-row__control .input,
+.setting-row__control .select {
+  min-width: 200px;
+}
+
+.danger-zone {
+  border-color: rgba(255, 69, 58, 0.3);
+  background: linear-gradient(180deg, rgba(255, 69, 58, 0.05), transparent 60%),
+    var(--surface);
+}
+
+.storage-meter {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.storage-meter__bar {
+  height: 8px;
+  border-radius: var(--r-pill);
+  background: var(--surface-sunken);
+  border: 1px solid var(--border-soft);
+  overflow: hidden;
+}
+
+.storage-meter__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--info), #7fc7ff);
+  transition: width 800ms var(--ease-out);
+}
+
+@media (max-width: 860px) {
+  .settings-layout {
+    grid-template-columns: 1fr;
+  }
+  .settings-nav {
+    position: static;
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: var(--sp-2);
+  }
+  .settings-nav button {
+    white-space: nowrap;
+  }
+}
