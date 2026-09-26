@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AR-750 phone link</title>
+<style>
+  :root{--bg:#0A0F0D;--card:#141B17;--ink:#E9EFE9;--dim:#9AABA3;--amber:#E0AC4B;--line:#27332C}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif;
+    min-height:100vh;display:grid;place-items:center;padding:24px 16px}
+  main{max-width:760px;width:100%;display:grid;gap:22px;grid-template-columns:auto 1fr;align-items:center;
+    background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px}
+  h1{grid-column:1/-1;margin:0;font-size:28px;letter-spacing:.01em}
+  h1 span{color:var(--amber)}
+  #qr{background:#fff;padding:14px;border-radius:12px;width:288px;height:288px;display:grid;place-items:center}
+  #qr img,#qr canvas{display:block}
+  ol{margin:0;padding-left:22px;display:grid;gap:8px}
+  .url{grid-column:1/-1;font:600 20px ui-monospace,Consolas,monospace;color:var(--amber);
+    background:#0E1411;border:1px solid var(--line);border-radius:10px;padding:12px 14px;word-break:break-all}
+  .note{grid-column:1/-1;color:var(--dim);font-size:14px;margin:0}
+  @media(max-width:640px){main{grid-template-columns:1fr}#qr{justify-self:center}}
+</style>
+<main>
+  <h1>Phone par <span>AR-750</span> kholiye</h1>
+  <div id="qr">QR bana raha hoon...</div>
+  <ol>
+    <li>Phone ko WiFi {{WIFI}} se jodiye.</li>
+    <li>Phone ke camera se yeh QR code scan kijiye.</li>
+    <li>Pehli baar login kijiye. Phone yaad rakhega.</li>
+    <li><b>Remote</b> page khulega: joystick, camera ghumana, aur arm.</li>
+  </ol>
+  <div class="url">{{URL}}</div>
+  <p class="note">QR na chale to upar wala link phone ke browser mein type kar dijiye. Laptop aur phone
+    dono par live camera ek saath dikhega. Ek waqt mein ek hi jagah se chalaiye, aur joystick chhodte hi
+    rover ruk jaata hai.</p>
+</main>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+  (function () {
+    var box = document.getElementById('qr');
+    try {
+      box.textContent = '';
+      new QRCode(box, { text: "{{URL}}", width: 260, height: 260,
+        colorDark: '#000000', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M });
+    } catch (e) {
+      box.textContent = 'QR ke liye laptop par internet chahiye. Neeche wala link type kar dijiye.';
+      box.style.color = '#333'; box.style.padding = '18px'; box.style.textAlign = 'center';
+    }
+  })();
+</script>
+</html>

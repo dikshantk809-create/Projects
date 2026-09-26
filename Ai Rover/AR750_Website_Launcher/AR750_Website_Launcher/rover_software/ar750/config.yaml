@@ -1,0 +1,332 @@
+# AR-750 - one file for everything you might need to change.
+#
+# Every dimension below was read out of AR-750_Rover_Complete_Assembly.f3d, not
+# estimated. Where a number depends on a part you have not bought yet (motor
+# speed, nozzle flow) it says so and tells you how to measure it.
+#
+# Pin numbers are BCM. Every hardware block can be turned off, and anything
+# turned off runs in simulation so you can test the whole rover on a laptop.
+
+rover:
+  name: "AR-750"
+  crop: "vegetables"
+  # --- straight from the CAD ---
+  wheelbase_mm: 540          # front axle to rear axle
+  track_mm: 430              # wheel centre to wheel centre
+  wheel_dia_mm: 209.6        # over the tyre
+  tyre_width_mm: 75
+  ground_clearance_mm: 108   # the diff skid shoe is the lowest thing
+  length_mm: 772
+  body_width_mm: 516
+  boom_width_mm: 700         # the boom is the widest thing on it
+  height_mm: 404             # over the cab, not counting the antenna
+  # --- you measure this one ---
+  # Jack it up, run the wheels at full throttle for 10 seconds, count the turns.
+  #   speed = turns / 10 x 0.659 m       (0.659 m is one wheel revolution)
+  max_speed_mps: 0.45
+  gear_ratio: 5.9375         # 16T->40T then 16T->38T, after the motor gearbox
+  sim: auto                  # auto | true | false
+
+safety:
+  loop_hz: 50
+  command_timeout_s: 0.6     # no command for this long and it stops itself
+  web_timeout_s: 5.0
+  # AI mode with no front distance sensor cannot see what is in its way, so
+  # it is never allowed faster than this. Fit the HC-SR04 and it goes away.
+  auto_speed_without_range: 0.3
+  battery:
+    # WHICH PACK DID YOU ACTUALLY BUY? Get this wrong and either the rover
+    # refuses to move on a full battery, or it flattens the pack and ruins it.
+    #
+    #   lead     12 V sealed lead acid   cells 6   warn 11.8   stop 11.0
+    #   lifepo4  "12 V" LiFePO4 4S       cells 4   warn 12.8   stop 12.0
+    #   lipo     14.8 V hobby 4S         cells 4   warn 14.4   stop 13.6
+    #
+    #   lipo     11.1 V hobby 3S         cells 3   warn 10.5   stop 9.9
+    #
+    # The small build runs an 11.1 V 3S LiPo, 2200 mAh. These act only when
+    # an ADS1115 measures the pack - without one the website says "not
+    # measured" and nothing is decided on a guess. Fit a LiPo alarm to the
+    # balance plug meanwhile: a 3S pack run below 9.9 V is ruined.
+    chemistry: lipo
+    cells: 3
+    warn_v: 10.5             # 3.5 V per cell
+    stop_v: 9.9              # 3.3 V per cell. Below this the pack is damaged.
+    capacity_ah: 2.2
+  tilt_stop_deg: 20          # it is tall and narrow, so this is tighter than
+                             # you might expect. Needs an IMU to do anything.
+  return_home_pct: 25
+  max_motor_current_a: 30.0
+
+drive:
+  # Two motors, one per axle. Both do the same thing: this is four wheel
+  # drive. Steering is the servo's job, see below.
+  #
+  # WHICH MOTOR DRIVER DID YOU BUILD?
+  #   bts7960  two pins per motor, both PWM. The BTS7960 / IBT-2 board.
+  #            6-27 V, 43 A, about Rs 256 each. Nothing to arm.
+  #   esc      one pin per motor, a 1-2 ms servo pulse. Check the voltage:
+  #            almost every hobby brushed ESC stops at 3S = 12.6 V, which is
+  #            under a freshly charged 12 V pack.
+  #   l298n    the small red L298N: IN1/IN2 and IN3/IN4, same idea as the
+  #            BTS7960. Keep the ENA and ENB jumpers ON. 2 A a side.
+  #
+  # HOW DOES IT TURN?
+  #   car      the AR-750: axles plus a steering servo
+  #   skid     left side and right side driven apart, like a tank - the
+  #            small build, which has no steering servo
+  driver: l298n
+  layout: skid
+  skid:
+    turn_gain: 0.7           # how hard a full-sideways stick turns it
+
+  hbridge:
+    # layout skid, on the L298N: OUT1/OUT2 -> left motors, OUT3/OUT4 -> right
+    left_fwd_pin: 12         # IN1  (Pi pin 32)
+    left_rev_pin: 19         # IN2  (Pi pin 35)
+    right_fwd_pin: 13        # IN3  (Pi pin 33)
+    right_rev_pin: 26        # IN4  (Pi pin 37)
+    # layout car, BTS7960: tie R_EN and L_EN to 3.3 V, then drive RPWM and LPWM.
+    front_fwd_pin: 12        # front RPWM
+    front_rev_pin: 19        # front LPWM
+    rear_fwd_pin: 13         # rear RPWM
+    rear_rev_pin: 10         # rear LPWM
+    pwm_hz: 1000             # 1 kHz gives pigpio 200 real steps. Higher is
+                             # quieter but coarser. The board takes 25 kHz.
+    min_duty: 0.2            # A geared motor often only buzzes below about
+                             # 0.15. Put what `bench.py wheels` tells you here
+                             # and a small stick input will actually move it.
+
+  esc:
+    # Only used when driver is "esc".
+    front_pin: 12            # hardware PWM pin
+    rear_pin: 13             # hardware PWM pin
+    min_us: 1000             # full reverse
+    neutral_us: 1500         # stopped - the ESC must see this at power on
+    max_us: 2000             # full forward
+    arm_seconds: 2.0         # how long to hold neutral before it will move
+  invert_front: false        # flip if that axle drives the wrong way
+  invert_rear: false
+  invert_left: false         # skid: flip if that side drives backwards
+  invert_right: false
+  ramp_per_tick: 0.05        # how fast the throttle may change, per 20 ms
+  speed_limit: 0.6
+
+  steering:
+    # layout car only. The skid build sends nothing here: GPIO 18 carries
+    # the camera's pan servo instead.
+    pin: 18                  # hardware PWM pin
+    centre_us: 1500
+    min_us: 900
+    max_us: 2100
+    us_per_deg: 9.0          # 900 us over 100 degrees of servo travel
+    trim_us: 0               # nudge this until it tracks straight
+    reverse: false
+    servo_max_deg: 60        # how far the servo itself may turn
+    # Leave max_wheel_deg at 0 and it works the angle out from the linkage
+    # below. Put a measured number in and that wins.
+    max_wheel_deg: 0
+    linkage:                 # all from the CAD, in mm
+      servo_horn_mm: 12.0
+      plate_pickup_mm: 40.0
+      plate_tierod_mm: 64.0
+      steer_arm_mm: 39.8
+
+  encoder:
+    enabled: false           # fit these. See docs.
+    left_a: 5
+    left_b: 6
+    right_a: 20
+    right_b: 21
+    ticks_per_rev: 1200
+
+boom:
+  # A boom sprayer. It lays a band down as it drives; it does not dot one plant.
+  enabled: false             # not on the small build. Its pins (16, 17, 27,
+                             # 22) are left alone - the arm's servos use them.
+  nozzles: 5
+  nozzle_spacing_mm: 140     # from the model: y -280 -140 0 +140 +280
+  nozzle_height_mm: 235
+  boom_width_mm: 700
+  tank_litres: 5.0           # 300x200x100 outside, about 5 litres inside
+  # MEASURE THIS. Catch one nozzle in a jug for one minute.
+  ml_per_min_per_nozzle: 350.0
+  pump_pin: 16
+  left_pin: 17               # nozzles 1 and 2
+  centre_pin: 27             # nozzle 3
+  right_pin: 22              # nozzles 4 and 5
+  # How much you actually want on the crop. The valves pulse to hit it.
+  target_l_per_ha: 200.0
+  pwm_hz: 10.0               # how fast the section valves pulse
+  min_duty: 0.15             # below this the band goes stripey, and it says so
+  # Limits it cannot be argued out of
+  max_l_per_ha: 400.0
+  max_ml_per_session: 4000.0
+  require_arm_switch: true
+  band_seconds: 1.2          # how long a burst over one plant lasts
+
+probe:
+  # A lead screw that drives the moisture spike into the soil, with a limit
+  # switch at each end. Not a servo.
+  enabled: false             # not on the small build (its pins carry servos)
+  motor_up_pin: 23
+  motor_down_pin: 24
+  limit_up_pin: 25
+  limit_down_pin: 26
+  travel_mm: 190             # between the two switches, from the model
+  depth_below_ground_mm: 65  # how far the spike goes in at full down
+  timeout_s: 25              # if a switch has not closed by then, it is jammed
+  settle_s: 2.0              # let the reading steady before believing it
+  every_n_plants: 10         # how often to stop and take a reading in AUTO
+
+sensors:
+  adc:
+    driver: ads1115
+    i2c_addr: 0x48
+    soil_channel: 0
+    tank_channel: 1
+    battery_channel: 2
+    current_channel: 3
+    battery_divider: 6.0     # (R1+R2)/R2 of your divider
+  soil:
+    dry_counts: 26000        # reading in dry air (with an ADS1115)
+    wet_counts: 11000        # reading in a glass of water
+    # The blue LM393 soil module's DO pin. With no ADS1115 the Pi can only
+    # read wet or dry from it; its screw pot sets where one becomes the
+    # other. Power the module from 3.3 V so DO never reaches 5 V.
+    digital_pin: 25          # DO -> Pi pin 22
+    wet_level: 0             # DO goes LOW when wet
+  current:
+    zero_volts: 2.5
+    mv_per_amp: 66.0
+  imu:
+    enabled: false
+    i2c_addr: 0x68
+    bus: 1
+  gps:
+    enabled: false
+    port: /dev/ttyAMA0
+    baud: 9600
+  range_front:
+    enabled: false
+    trig: 7
+    echo: 8
+    stop_cm: 60              # it is heavier and faster than the MK3, so more
+
+lamps:
+  # Headlights and tail lights, from 11_Lighting. Not on the small build.
+  front_pin: null            # AR-750: 9
+  rear_pin: null             # AR-750: 11
+
+rc:
+  # Your 6 channel set. This is a car, so the sticks mean car things.
+  enabled: false             # no hand remote on the small build - the phone drives
+  protocol: sbus             # sbus | ppm | pwm | sim
+  sbus_port: /dev/serial0
+  ppm_pin: 4
+  pwm_pins: [14, 15, 19, 26, 0, 1]
+  map:
+    throttle: 2              # forward and back
+    steer: 0                 # left and right - this turns the WHEELS
+    probe: 1                 # up sends the probe down, down brings it up
+    boom: 3                  # which boom sections are live
+    mode: 4                  # 3 position: manual / hold / auto
+    spray_arm: 5             # 2 position, arms the pump
+  deadband: 0.06
+  failsafe_hold_s: 0.5
+
+cameras:
+  front:
+    enabled: true
+    source: picam
+    sensor: imx500           # the Pi AI Camera. install.sh fetches its firmware.
+    index: 0
+    width: 640
+    height: 480
+    fps: 15
+    # What goes to the website. The camera itself keeps its full rate for row
+    # following; only the live view is lighter, so it does not choke the wifi.
+    # A strong wifi can take stream_fps: 10 and jpeg_quality: 70.
+    stream_fps: 6
+    jpeg_quality: 60
+    # From the model: lens centre at x=-365, y=0, z=254, looking forward.
+    height_mm: 254
+    pitch_deg: 12            # MEASURE THIS. The model shows the pod level;
+                             # tilt it down about 12 deg so it sees the row.
+    vfov_deg: 52             # Pi AI Camera (IMX500): 78 deg diagonal, about
+                             # 52 up-down. A Camera v2 is 48. Check yours.
+    forward_offset_mm: 95    # how far ahead of the front axle the lens sits
+    side_offset_mm: 0
+
+# ---------------------------------------------------------------- servos
+# The robotic arm and the servo under the camera - every hobby servo that is
+# not the steering. They plug into a PCA9685 16-channel servo board on the
+# I2C bus (SDA GPIO 2, SCL GPIO 3, same bus as the ADC), address 0x40. Give
+# the board its OWN 5-6 V supply for the servos (V+ terminal) - six servos
+# can pull several amps and will brown out the Pi if they share its 5 V.
+# Only the grounds are joined.
+#
+# BEFORE THE FIRST MOVE: every angle below is a starting guess. Take each
+# joint slowly from the phone, note where it touches something, and set
+# min/max a few degrees inside that. A servo told to push past a hard stop
+# stalls, heats and strips its gears.
+servos:
+  enabled: true
+  # The small build has no PCA9685, so each servo's signal wire goes straight
+  # to a Pi pin and pigpio makes the pulses. Power the servos from their OWN
+  # 5-6 V supply, never the Pi's 5 V pins, and join only the grounds.
+  # With a PCA9685 later: driver: pca9685, and channel = the board's output.
+  driver: gpio               # gpio (Pi pins) or pca9685
+  i2c_bus: 1
+  i2c_addr: 0x40
+  pwm_hz: 50
+  speed_deg_s: 40            # how fast a joint may turn. Slow is smooth.
+  joints:
+    # channel = the GPIO number; the Pi pin is the physical pin on the header
+    - {name: pan,      label: "Camera left / right", group: camera, channel: 18,
+       min: 20, max: 160, park: 90, speed_deg_s: 90}      # MG996R  - Pi pin 12
+    - {name: base,     label: "Base (turn)",      group: arm, channel: 17,
+       min: 10, max: 170, park: 90}                       # Pi pin 11
+    - {name: shoulder, label: "Shoulder",         group: arm, channel: 27,
+       min: 20, max: 160, park: 140}                      # Pi pin 13
+    - {name: elbow,    label: "Elbow",            group: arm, channel: 22,
+       min: 20, max: 160, park: 40}                       # Pi pin 15
+    - {name: wrist,    label: "Wrist up / down",  group: arm, channel: 23,
+       min: 10, max: 170, park: 90}                       # Pi pin 16
+    - {name: grip,     label: "Gripper",          group: arm, channel: 24,
+       min: 30, max: 110, park: 60, open: 110, closed: 30, speed_deg_s: 60}  # Pi pin 18
+    # A sixth servo, if your arm has a wrist turn - GPIO 5, Pi pin 29:
+    # - {name: roll, label: "Wrist turn", group: arm, channel: 5, min: 10, max: 170, park: 90}
+  # one tap on the phone moves every joint listed, each at its own speed
+  poses:
+    park:  {base: 90, shoulder: 140, elbow: 40,  wrist: 90, grip: 60}
+    ready: {base: 90, shoulder: 100, elbow: 80,  wrist: 90}
+    reach: {base: 90, shoulder: 60,  elbow: 110, wrist: 60}
+
+ai:
+  enabled: true
+  model: models/plant_health_int8.tflite
+  labels: models/labels.txt
+  input_size: 224
+  min_confidence: 0.60
+  auto_spray_confidence: 0.85
+  inspect_seconds: 1.5
+  row:
+    green_hue: [30, 90]
+    min_green_fraction: 0.04
+    steer_gain: 0.9
+    base_speed: 0.35         # fraction of top speed while following a row
+  plant_spacing_mm: 350
+  row_length_m: 20
+  rows: 1
+  row_gap_mm: 700            # matches the boom width: one pass per bed
+
+web:
+  host: 0.0.0.0
+  port: 8080
+  # The username and password are NOT here. You set them on the website: it
+  # starts as admin / agrirover and makes you change it the first time.
+  data_dir: data
+  log_dir: data/logs
+  photo_dir: data/photos
+  video_dir: data/recordings

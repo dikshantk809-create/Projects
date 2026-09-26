@@ -1,0 +1,17 @@
+# core - needed everywhere, laptop or Pi
+pyyaml>=6.0
+numpy>=1.24
+fastapi>=0.110
+uvicorn[standard]>=0.27
+
+# vision. On the Pi, apt's python3-opencv is faster to install than this.
+opencv-python-headless>=4.8
+
+# Raspberry Pi only. install.sh puts these on for you; by hand:
+#   sudo apt install -y pigpio python3-pigpio python3-picamera2 i2c-tools python3-smbus
+#   sudo systemctl enable --now pigpiod
+#   pip install adafruit-circuitpython-pca9685 adafruit-circuitpython-ads1x15
+#   pip install pyserial smbus2
+#
+# Only if you have trained a plant model:
+#   pip install tflite-runtime

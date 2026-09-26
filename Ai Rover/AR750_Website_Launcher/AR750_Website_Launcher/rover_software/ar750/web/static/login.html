@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0F0D">
+<title>Sign in · AR-750</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>&#127793;</text></svg>">
+<link rel="stylesheet" href="/static/fonts.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/static/style.css">
+<style>
+  body{display:grid; place-items:center; padding:28px 16px; min-height:100dvh}
+  .box{width:min(420px,100%); display:grid; gap:20px;
+       animation:rise .5s cubic-bezier(.16,1,.3,1) both}
+  .mark{display:flex; align-items:center; gap:12px; justify-content:center;
+        flex-direction:column; text-align:center}
+  .mark .glyph{width:56px;height:56px;border-radius:17px;display:grid;place-items:center;
+    background:linear-gradient(145deg,var(--amber),#A9741A);
+    box-shadow:0 14px 34px -12px var(--amber-glow), inset 0 1px 0 rgba(255,255,255,.4);
+    animation:float 5s ease-in-out infinite}
+  .mark .glyph svg{width:30px;height:30px;color:#201604}
+  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+  .mark b{font:700 27px var(--disp); letter-spacing:-.5px; display:block}
+  .mark span{font:500 12px var(--mono); color:var(--amber); letter-spacing:.2em}
+  .sub{text-align:center; color:var(--dim); font-size:13.5px; margin:-6px 0 0}
+  .err{background:var(--bad-bg); border:1px solid var(--bad-line); color:#FFC9C6;
+       border-radius:9px; padding:10px 13px; font-size:13.5px; display:none;
+       align-items:center; gap:8px}
+  .err.on{display:flex; animation:shake .38s}
+  @keyframes shake{0%,100%{transform:translateX(0)}
+    20%{transform:translateX(-7px)}40%{transform:translateX(6px)}
+    60%{transform:translateX(-4px)}80%{transform:translateX(3px)}}
+  .first{background:var(--amber-bg); border:1px solid var(--amber-dim);
+         color:var(--amber); border-radius:10px; padding:11px 14px; font-size:13px}
+  .spin{width:15px;height:15px;border-radius:50%;border:2px solid currentColor;
+        border-top-color:transparent; animation:spin .7s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+<div class="backdrop"></div>
+
+<form class="box" id="f" autocomplete="on">
+  <div class="mark">
+    <span class="glyph"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M20 4c0 9-5.5 14-12 14-1.2 0-2.4-.2-3.5-.6l-.9 2.3-1.8-.7 1-2.4C1 15 2 8.5 7.5 6 11.6 4.2 16 6 20 4Zm-4.3 3.9C12.4 9.6 9.3 11.8 7 16c3.9.6 7.6-2.2 8.7-8.1Z"/></svg></span>
+    <span><b>AgriRover</b><span>AR-750</span></span>
+  </div>
+  <p class="sub">Sign in to drive it.</p>
+
+  <div class="card"><div class="body">
+    <label for="u">Username
+      <input type="text" id="u" name="username" autocomplete="username"
+             autocapitalize="none" required value="admin"></label>
+    <label for="p">Password
+      <input type="password" id="p" name="password" autocomplete="current-password"
+             required autofocus></label>
+    <div class="err" id="err"></div>
+    <button class="go wide" type="submit" id="btn">Sign in</button>
+  </div></div>
+
+  <p class="first">First time? It starts as <b>admin</b> / <b>agrirover</b>.
+    Change both in Settings the moment you are in — this page may be reachable by
+    anyone on your wifi.</p>
+</form>
+
+<script>
+(function () {
+  'use strict';
+  // honour whatever theme the console was last left in
+  try {
+    if (localStorage.getItem('ar750.theme') === 'light')
+      document.documentElement.setAttribute('data-theme', 'light');
+  } catch (e) {}
+
+  var f = document.getElementById('f');
+  var btn = document.getElementById('btn');
+  var err = document.getElementById('err');
+
+  f.addEventListener('submit', function (ev) {
+    ev.preventDefault();
+    err.classList.remove('on');
+    btn.disabled = true;
+    btn.innerHTML = '<span class="spin"></span>Checking…';
+
+    function fail(msg) {
+      err.textContent = msg;
+      err.classList.add('on');
+      btn.disabled = false;
+      btn.textContent = 'Sign in';
+      document.getElementById('p').select();
+    }
+
+    fetch('/api/login', {
+      method: 'POST', credentials: 'same-origin',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        username: document.getElementById('u').value,
+        password: document.getElementById('p').value
+      })
+    }).then(function (r) { return r.json(); }).then(function (r) {
+      if (r.ok) { btn.textContent = 'Signed in'; location.href = '/'; return; }
+      fail(r.error || 'That did not work.');
+    }).catch(function () {
+      fail('Could not reach the rover.');
+    });
+  });
+}());
+</script>
+</body>
+</html>

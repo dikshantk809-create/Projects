@@ -1,0 +1,9 @@
+{
+  "admin": {
+    "name": "admin",
+    "salt": "H1esI5B3JvpjvtachYazXg==",
+    "hash": "KzAmAV1fy/oNFRGLk1EJ11Ug00UB/SLEwvgkqyiwGNg=",
+    "must_change": true,
+    "made": 1789635449.8281484
+  }
+}

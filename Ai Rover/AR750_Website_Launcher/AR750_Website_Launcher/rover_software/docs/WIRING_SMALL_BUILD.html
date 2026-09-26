@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>body{margin:0}[hidden]{display:none!important}</style>
+<title>AR-750 Wiring</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --paper:#F3F6F4; --card:#FFFFFF; --ink:#16201C; --ink-2:#34423C; --dim:#5D6C66;
+  --line:#D3DDD8; --line-2:#9FB0A8; --tint:#E6EEEA;
+  --pcb:#15704A; --pcb-bg:#E1F0E8;
+  --pos:#C62F28; --v5:#B06F10; --gnd:#1B2420;
+  --motor:#2C66CC; --servo:#D25A12; --soil:#0B8385; --pwr:#7B4FC4;
+  --warn-bg:#FFF1E6; --warn-line:#F0B58A; --warn-ink:#8A3A0B;
+  --wire-brown:#7A4726; --wire-red:#D22F2F; --wire-orange:#E9811F;
+  --display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --paper:#0F1513; --card:#161E1B; --ink:#E4ECE8; --ink-2:#BCC9C3; --dim:#8E9E97;
+    --line:#2A3632; --line-2:#4C5D56; --tint:#1C2622;
+    --pcb:#46C487; --pcb-bg:#12281E;
+    --pos:#FF6A5C; --v5:#F2B455; --gnd:#DCE5E0;
+    --motor:#79A8FF; --servo:#FF9955; --soil:#43CDCF; --pwr:#B794F4;
+    --warn-bg:#2B1C10; --warn-line:#6B3E1C; --warn-ink:#FFC08F;
+    --wire-brown:#C08A62; --wire-red:#FF6B6B; --wire-orange:#FFA24D;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --paper:#0F1513; --card:#161E1B; --ink:#E4ECE8; --ink-2:#BCC9C3; --dim:#8E9E97;
+  --line:#2A3632; --line-2:#4C5D56; --tint:#1C2622;
+  --pcb:#46C487; --pcb-bg:#12281E;
+  --pos:#FF6A5C; --v5:#F2B455; --gnd:#DCE5E0;
+  --motor:#79A8FF; --servo:#FF9955; --soil:#43CDCF; --pwr:#B794F4;
+  --warn-bg:#2B1C10; --warn-line:#6B3E1C; --warn-ink:#FFC08F;
+  --wire-brown:#C08A62; --wire-red:#FF6B6B; --wire-orange:#FFA24D;
+}
+
+body{background:var(--paper); color:var(--ink); font:15px/1.6 var(--sans);
+  -webkit-font-smoothing:antialiased}
+.page{max-width:1000px; margin:0 auto; padding-inline:18px; padding-block:26px 60px;
+  display:grid; gap:34px}
+h1,h2,h3{font-family:var(--display); font-weight:700; letter-spacing:.01em;
+  text-wrap:balance; margin:0; line-height:1.1}
+h1{font-size:clamp(34px,6vw,52px)}
+h2{font-size:28px; display:flex; align-items:baseline; gap:12px}
+h2 .n{font:600 13px var(--mono); color:var(--pcb); background:var(--pcb-bg);
+  padding:3px 8px; border-radius:5px; letter-spacing:0}
+h3{font-size:20px}
+p{margin:0; max-width:68ch}
+.lede{font-size:17px; color:var(--ink-2)}
+section{display:grid; gap:14px}
+.mono{font-family:var(--mono)}
+b{font-weight:600}
+code{font:500 13px var(--mono); background:var(--tint); padding:1px 5px; border-radius:4px}
+
+.head{display:grid; gap:12px; border-bottom:2px solid var(--ink); padding-bottom:22px}
+.eyebrow{font:600 12px var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--pcb)}
+.parts{display:flex; flex-wrap:wrap; gap:6px; margin-top:4px}
+.parts span{font:500 12.5px var(--mono); border:1px solid var(--line-2); border-radius:5px;
+  padding:3px 8px; background:var(--card)}
+
+.warn{background:var(--warn-bg); border:1px solid var(--warn-line); color:var(--warn-ink);
+  border-radius:8px; padding:12px 14px; display:grid; gap:4px}
+.warn b{color:inherit}
+
+/* the "buy these too" list */
+.buy{display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:10px}
+.buy div{background:var(--card); border:1px solid var(--line); border-radius:8px;
+  padding:11px 13px; display:grid; gap:2px; align-content:start}
+.buy b{font-size:14.5px}
+.buy span{color:var(--dim); font-size:13.5px; line-height:1.45}
+.buy .must{border-color:var(--pos)}
+.buy .must b::after{content:"  zaroori"; font:600 10.5px var(--mono); color:var(--pos);
+  letter-spacing:.06em; text-transform:uppercase}
+
+/* diagrams */
+figure{margin:0; display:grid; gap:10px}
+.scroll{overflow-x:auto; background:var(--card); border:1px solid var(--line);
+  border-radius:10px; -webkit-overflow-scrolling:touch}
+.scroll svg{display:block; width:100%; min-width:720px; height:auto}
+figcaption{color:var(--dim); font-size:13.5px; max-width:80ch}
+.hint{font:500 12px var(--mono); color:var(--dim)}
+
+svg text{font-family:var(--sans); fill:var(--ink)}
+svg .t-b{font-weight:600; font-size:14px}
+svg .t-s{font-size:11.5px; fill:var(--dim)}
+svg .t-m{font-family:var(--mono); font-size:11.5px}
+svg .t-mb{font-family:var(--mono); font-size:12px; font-weight:600}
+svg .box{fill:var(--card); stroke:var(--line-2); stroke-width:1.5}
+svg .box-pcb{fill:var(--pcb-bg); stroke:var(--pcb); stroke-width:1.5}
+svg .term{fill:var(--tint); stroke:var(--line-2); stroke-width:1.2}
+svg .heat{fill:var(--line); stroke:var(--line-2)}
+svg .w{fill:none; stroke-width:3; stroke-linecap:round; stroke-linejoin:round}
+svg .w-pos{stroke:var(--pos)} svg .w-5v{stroke:var(--v5)} svg .w-gnd{stroke:var(--gnd)}
+svg .w-motor{stroke:var(--motor); stroke-width:2.4} svg .w-mot{stroke:var(--ink-2); stroke-width:2.6}
+svg .w-thin{stroke:var(--dim); stroke-width:1.5; stroke-dasharray:4 4}
+svg .dot-pos{fill:var(--pos)} svg .dot-gnd{fill:var(--gnd)} svg .dot-5v{fill:var(--v5)}
+svg .lab-pos{fill:var(--pos); font:600 12px var(--mono)}
+svg .lab-5v{fill:var(--v5); font:600 12px var(--mono)}
+svg .lab-gnd{fill:var(--gnd); font:600 12px var(--mono)}
+svg .lab-motor{fill:var(--motor); font:600 12px var(--mono)}
+svg .no{stroke:var(--pos); stroke-width:2.5}
+svg .cap{fill:var(--ink)}
+svg .brown{stroke:var(--wire-brown)} svg .red{stroke:var(--wire-red)} svg .orange{stroke:var(--wire-orange)}
+svg .fill-brown{fill:var(--wire-brown)} svg .fill-red{fill:var(--wire-red)} svg .fill-orange{fill:var(--wire-orange)}
+
+/* the Pi header card */
+.header-card{background:var(--card); border:1px solid var(--line); border-radius:10px;
+  padding:14px 10px; display:grid; gap:10px}
+.orient{display:flex; gap:10px; align-items:center; flex-wrap:wrap; color:var(--dim); font-size:13.5px}
+.pins{display:grid; grid-template-columns:minmax(0,1fr) 30px 30px minmax(0,1fr);
+  column-gap:8px; row-gap:3px; align-items:center; font-size:12.5px}
+.pin{width:26px; height:26px; border-radius:50%; display:grid; place-items:center;
+  font:600 11px var(--mono); border:2px solid var(--line-2); color:var(--dim); background:var(--paper)}
+.pin.sq{border-radius:5px}
+.lbl{display:flex; gap:6px; align-items:center; min-width:0; line-height:1.25}
+.lbl.l{justify-content:flex-end; text-align:right}
+.lbl .g{font:500 11px var(--mono); color:var(--dim); white-space:nowrap}
+.lbl .to{font-weight:600; color:var(--ink); overflow-wrap:anywhere}
+.lbl.off .to{font-weight:400; color:var(--dim)}
+.k-motor .pin{border-color:var(--motor); background:var(--motor); color:#fff}
+.k-servo .pin{border-color:var(--servo); background:var(--servo); color:#fff}
+.k-soil .pin{border-color:var(--soil); background:var(--soil); color:#fff}
+.k-gnd .pin{border-color:var(--gnd); background:var(--gnd); color:var(--paper)}
+.k-3v3 .pin{border-color:var(--pwr); background:var(--pwr); color:#fff}
+.k-motor .to{color:var(--motor)} .k-servo .to{color:var(--servo)} .k-soil .to{color:var(--soil)}
+.k-3v3 .to{color:var(--pwr)}
+.key{display:flex; flex-wrap:wrap; gap:6px 14px; font-size:12.5px; color:var(--ink-2)}
+.key i{display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:5px; vertical-align:-1px}
+
+/* tables */
+.tbl{overflow-x:auto; border:1px solid var(--line); border-radius:10px; background:var(--card)}
+table{border-collapse:collapse; width:100%; font-size:14px; min-width:520px}
+th,td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--line); vertical-align:top}
+th{font:600 11.5px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--dim);
+  background:var(--tint)}
+tr:last-child td{border-bottom:0}
+td.num{font-family:var(--mono); font-variant-numeric:tabular-nums; white-space:nowrap}
+.sw{display:inline-block; width:10px; height:10px; border-radius:50%; margin-right:6px; vertical-align:0}
+
+/* steps and checks */
+ol.steps{margin:0; padding:0; list-style:none; counter-reset:s; display:grid; gap:10px}
+ol.steps li{counter-increment:s; display:grid; grid-template-columns:34px 1fr; gap:10px;
+  background:var(--card); border:1px solid var(--line); border-radius:8px; padding:11px 13px}
+ol.steps li::before{content:counter(s); font:700 20px var(--display); color:var(--pcb);
+  background:var(--pcb-bg); border-radius:6px; display:grid; place-items:center; height:30px}
+ol.steps li div{display:grid; gap:3px}
+ul.checks{margin:0; padding:0; list-style:none; display:grid; gap:8px}
+ul.checks li{display:grid; grid-template-columns:22px 1fr; gap:8px; align-items:start}
+ul.checks input{width:18px; height:18px; margin:3px 0 0; accent-color:var(--pcb)}
+ul.checks label{cursor:pointer}
+.two{display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:14px}
+.panel{background:var(--card); border:1px solid var(--line); border-radius:10px; padding:14px 16px;
+  display:grid; gap:10px; align-content:start}
+.faults{display:grid; gap:8px}
+.faults div{display:grid; gap:1px; border-left:3px solid var(--line-2); padding-left:11px}
+.faults b{font-size:14.5px}
+.faults span{color:var(--ink-2); font-size:14px}
+:focus-visible{outline:2px solid var(--pcb); outline-offset:2px}
+@media (max-width:520px){
+  body{font-size:14.5px}
+  .pins{column-gap:5px; font-size:11.5px; grid-template-columns:minmax(0,1fr) 28px 28px minmax(0,1fr)}
+  .pin{width:24px; height:24px; font-size:10px}
+  .lbl .g{display:none}
+}
+</style>
+
+<main class="page">
+
+  <header class="head">
+    <span class="eyebrow">AR-750 · chhota build · Raspberry Pi 4</span>
+    <h1>Har taar kahan lagega</h1>
+    <p class="lede">Aapke parts ke hisaab se poori wiring. Software mein yahi pins pehle se
+      set hain, isliye bas is naqshe ke hisaab se jodiye.</p>
+    <div class="parts" aria-label="Your parts">
+      <span>Raspberry Pi 4 · 4GB</span><span>L298N</span><span>12V 500RPM DC motors</span>
+      <span>3S LiPo 11.1V 2200mAh</span><span>MG996R → camera</span><span>5-DOF arm</span>
+      <span>Soil moisture module</span><span>Pi AI Camera (IMX500)</span>
+    </div>
+    <div class="warn" role="note">
+      <b>Sab kuch battery hata kar jodiye. Battery sabse aakhir mein lagegi.</b>
+      <span>Dono buck converter ka voltage multimeter se pehle set kijiye, phir unhe Pi ya
+        servo se jodiye. Nayi buck board aksar 12V hi bahar deti hai, aur usse Pi turant jal jayega.</span>
+    </div>
+  </header>
+
+  <section aria-labelledby="buy">
+    <h2 id="buy"><span class="n">0</span>Yeh aur chahiye (aapki list mein nahi hain)</h2>
+    <div class="buy">
+      <div class="must"><b>Buck converter A (Pi ke liye)</b><span>12V → 5V 3A, USB-C output wala module.
+        Pi ko battery se yahi chalayega. Lagbhag ₹250–400.</span></div>
+      <div class="must"><b>Buck converter B (servos ke liye)</b><span>XL4015 5A adjustable. 5.5V par set karein,
+        saare 6 servo isse chalenge. Lagbhag ₹200–300.</span></div>
+      <div class="must"><b>Fuse 10A + holder</b><span>Battery ke + taar par. LiPo short hua to aag lag
+        sakti hai, fuse use rokta hai.</span></div>
+      <div class="must"><b>Main switch (10A ya zyada)</b><span>Rover ko ek jhatke mein band karne ke liye.</span></div>
+      <div class="must"><b>LiPo alarm (buzzer)</b><span>Battery ke balance plug par lagta hai aur 3S ke
+        9.9V se neeche jaane se pehle beep karta hai. Lagbhag ₹100.</span></div>
+      <div><b>XT60 female connector</b><span>Battery ko rover se jodne ke liye.</span></div>
+      <div><b>Female–female jumper wires</b><span>Pi ke pins se L298N, servo aur sensor tak. 40 wale pack kaafi hain.</span></div>
+      <div><b>Arm ke 5 servo</b><span>Sirf agar kit ke saath nahi aaye. Base, shoulder aur elbow ke liye
+        MG996R, wrist aur gripper ke liye SG90 ya MG90S.</span></div>
+      <div><b>Baad mein: ADS1115</b><span>Iske bina soil sensor sirf "wet/dry" batata hai aur battery ka
+        voltage napa nahi jaata. Lagbhag ₹250.</span></div>
+    </div>
+  </section>
+
+  <!-- ======================================================= 1. POWER -->
+  <section aria-labelledby="pwr">
+    <h2 id="pwr"><span class="n">1</span>Power: battery se sab tak</h2>
+    <figure>
+      <div class="scroll">
+        <svg viewBox="0 0 1004 390" role="img" aria-label="Battery plus goes through a 10 amp fuse and the main switch to one plus line that feeds the L298N 12V terminal, buck A set to 5.1 volts for the Raspberry Pi USB-C, and buck B set to 5.5 volts for the servo rail. Every ground joins one common ground line.">
+          <!-- battery -->
+          <rect class="box" x="20" y="36" width="150" height="84" rx="8"/>
+          <text class="t-b" x="95" y="64" text-anchor="middle">3S LiPo</text>
+          <text class="t-s" x="95" y="84" text-anchor="middle">11.1 V · 2200 mAh</text>
+          <text class="t-s" x="95" y="102" text-anchor="middle">XT60</text>
+          <text class="lab-pos" x="176" y="62">+</text>
+          <text class="lab-gnd" x="30" y="136">−</text>
+          <!-- alarm -->
+          <rect class="box" x="70" y="160" width="130" height="46" rx="8"/>
+          <text class="t-b" x="135" y="180" text-anchor="middle" style="font-size:13px">LiPo alarm</text>
+          <text class="t-s" x="135" y="197" text-anchor="middle">balance plug par</text>
+          <path class="w w-thin" d="M140 120 V160"/>
+
+          <!-- plus path -->
+          <path class="w w-pos" d="M170 70 H200"/>
+          <rect class="box" x="200" y="50" width="84" height="40" rx="6"/>
+          <text class="t-b" x="242" y="75" text-anchor="middle" style="font-size:13px">Fuse 10A</text>
+          <path class="w w-pos" d="M284 70 H312"/>
+          <rect class="box" x="312" y="50" width="104" height="40" rx="6"/>
+          <text class="t-b" x="364" y="75" text-anchor="middle" style="font-size:13px">Main switch</text>
+          <path class="w w-pos" d="M416 70 H900"/>
+          <text class="lab-pos" x="650" y="60" text-anchor="middle">+11.1 V</text>
+          <circle class="dot-pos" cx="540" cy="70" r="4.5"/>
+          <circle class="dot-pos" cx="720" cy="70" r="4.5"/>
+          <circle class="dot-pos" cx="900" cy="70" r="4.5"/>
+          <path class="w w-pos" d="M540 70 V110 M720 70 V110 M900 70 V110"/>
+
+          <!-- L298N -->
+          <rect class="box" x="470" y="110" width="140" height="60" rx="8"/>
+          <text class="t-b" x="540" y="136" text-anchor="middle">L298N</text>
+          <text class="t-s" x="540" y="155" text-anchor="middle">"12V" terminal</text>
+          <text class="t-s" x="540" y="196" text-anchor="middle">motors: figure 2</text>
+
+          <!-- buck A and the Pi -->
+          <rect class="box" x="650" y="110" width="140" height="60" rx="8"/>
+          <text class="t-b" x="720" y="136" text-anchor="middle">Buck A</text>
+          <text class="t-s" x="720" y="155" text-anchor="middle">pehle 5.1 V set</text>
+          <path class="w w-5v" d="M720 170 V222"/>
+          <text class="lab-5v" x="728" y="200">5.1 V · 3 A</text>
+          <rect class="box-pcb" x="650" y="222" width="140" height="58" rx="8"/>
+          <text class="t-b" x="720" y="247" text-anchor="middle">Raspberry Pi 4</text>
+          <text class="t-s" x="720" y="266" text-anchor="middle">USB-C socket</text>
+
+          <!-- buck B and the servos -->
+          <rect class="box" x="830" y="110" width="140" height="60" rx="8"/>
+          <text class="t-b" x="900" y="136" text-anchor="middle">Buck B</text>
+          <text class="t-s" x="900" y="155" text-anchor="middle">pehle 5.5 V set</text>
+          <path class="w w-5v" d="M900 170 V222"/>
+          <text class="lab-5v" x="908" y="200">5.5 V · 5 A</text>
+          <rect class="box" x="830" y="222" width="140" height="58" rx="8"/>
+          <text class="t-b" x="900" y="247" text-anchor="middle">Servo rail +</text>
+          <text class="t-s" x="900" y="266" text-anchor="middle">6 servo ke laal taar</text>
+
+          <!-- ground -->
+          <path class="w w-gnd" d="M40 120 V340 H920"/>
+          <path class="w w-gnd" d="M540 170 V180 M540 214 V340"/>
+          <path class="w w-gnd" d="M650 150 H630 V340"/>
+          <path class="w w-gnd" d="M720 280 V340"/>
+          <path class="w w-gnd" d="M830 150 H810 V340"/>
+          <path class="w w-gnd" d="M920 280 V340"/>
+          <circle class="dot-gnd" cx="540" cy="340" r="4.5"/><circle class="dot-gnd" cx="630" cy="340" r="4.5"/>
+          <circle class="dot-gnd" cx="720" cy="340" r="4.5"/><circle class="dot-gnd" cx="810" cy="340" r="4.5"/>
+          <text class="lab-gnd" x="480" y="370" text-anchor="middle">GND: saare minus ek hi line par (common ground)</text>
+        </svg>
+      </div>
+      <figcaption>Laal line battery ka +11.1V hai. Yeh fuse aur switch se hokar teen jagah jaata hai: L298N,
+        buck A (Pi ke liye) aur buck B (servos ke liye). Neeche wali kaali line saare minus ko jodti hai.
+        Iske bina Pi ke signal motor board aur servo tak nahi pahunchenge.</figcaption>
+    </figure>
+  </section>
+
+  <!-- ===================================================== 2. L298N -->
+  <section aria-labelledby="drv">
+    <h2 id="drv"><span class="n">2</span>L298N aur motors</h2>
+    <figure>
+      <div class="scroll">
+        <svg viewBox="0 0 980 470" role="img" aria-label="L298N seen from above. OUT1 and OUT2 go to the left motors, OUT3 and OUT4 to the right motors. The 12V terminal takes battery plus, GND takes battery minus and a wire to Pi pin 34, the 5V terminal stays empty. ENA and ENB jumpers stay on. IN1 to Pi pin 32, IN2 to pin 35, IN3 to pin 33, IN4 to pin 37.">
+          <!-- board -->
+          <rect class="box" x="340" y="50" width="300" height="270" rx="10"/>
+          <rect class="heat" x="440" y="50" width="100" height="56" rx="3"/>
+          <path d="M455 50 V106 M470 50 V106 M485 50 V106 M500 50 V106 M515 50 V106 M530 50 V106" stroke="var(--line-2)" stroke-width="1"/>
+          <text class="t-s" x="490" y="126" text-anchor="middle">heatsink</text>
+          <text class="t-b" x="490" y="170" text-anchor="middle" style="font-size:18px">L298N</text>
+          <text class="t-s" x="490" y="189" text-anchor="middle">upar se dekhne par</text>
+
+          <!-- motor A terminal -->
+          <rect class="term" x="340" y="160" width="34" height="80" rx="3"/>
+          <text class="t-mb" x="382" y="186">OUT1</text><text class="t-mb" x="382" y="226">OUT2</text>
+          <circle cx="357" cy="180" r="6" class="term"/><circle cx="357" cy="220" r="6" class="term"/>
+          <!-- motor B terminal -->
+          <rect class="term" x="606" y="160" width="34" height="80" rx="3"/>
+          <text class="t-mb" x="598" y="186" text-anchor="end">OUT3</text><text class="t-mb" x="598" y="226" text-anchor="end">OUT4</text>
+          <circle cx="623" cy="180" r="6" class="term"/><circle cx="623" cy="220" r="6" class="term"/>
+
+          <!-- power terminal -->
+          <rect class="term" x="368" y="286" width="126" height="34" rx="3"/>
+          <circle cx="390" cy="303" r="6" class="term"/><circle cx="431" cy="303" r="6" class="term"/><circle cx="472" cy="303" r="6" class="term"/>
+          <text class="t-mb" x="390" y="279" text-anchor="middle">12V</text>
+          <text class="t-mb" x="431" y="279" text-anchor="middle">GND</text>
+          <text class="t-mb" x="472" y="279" text-anchor="middle">5V</text>
+          <!-- 5V-EN jumper -->
+          <rect x="372" y="238" width="16" height="12" rx="2" class="cap"/>
+          <text class="t-s" x="396" y="248">5V-EN: laga rahe</text>
+
+          <!-- control header -->
+          <g>
+            <rect class="term" x="506" y="292" width="130" height="22" rx="3"/>
+            <circle cx="516" cy="303" r="4" class="term"/><circle cx="538" cy="303" r="4" class="term"/>
+            <circle cx="560" cy="303" r="4" class="term"/><circle cx="582" cy="303" r="4" class="term"/>
+            <circle cx="604" cy="303" r="4" class="term"/><circle cx="626" cy="303" r="4" class="term"/>
+            <rect x="510" y="266" width="12" height="16" rx="2" class="cap"/>
+            <rect x="620" y="266" width="12" height="16" rx="2" class="cap"/>
+            <text class="t-m" x="516" y="262" text-anchor="middle">ENA</text>
+            <text class="t-m" x="626" y="262" text-anchor="middle">ENB</text>
+            <text class="t-s" x="566" y="250" text-anchor="middle">ENA/ENB jumper: laga rahe</text>
+            <text class="t-m" x="538" y="288" text-anchor="middle" style="font-size:10.5px">IN1</text>
+            <text class="t-m" x="560" y="288" text-anchor="middle" style="font-size:10.5px">IN2</text>
+            <text class="t-m" x="582" y="288" text-anchor="middle" style="font-size:10.5px">IN3</text>
+            <text class="t-m" x="604" y="288" text-anchor="middle" style="font-size:10.5px">IN4</text>
+          </g>
+
+          <!-- motors -->
+          <rect class="box" x="40" y="150" width="190" height="100" rx="8"/>
+          <text class="t-b" x="135" y="182" text-anchor="middle">Left motors</text>
+          <text class="t-s" x="135" y="202" text-anchor="middle">1 motor, ya 2 parallel mein</text>
+          <text class="t-s" x="135" y="220" text-anchor="middle">(aage + peeche wala)</text>
+          <path class="w w-mot" d="M230 180 H351 M230 220 H351"/>
+          <text class="t-s" x="290" y="172" text-anchor="middle">motor taar 1</text>
+          <text class="t-s" x="290" y="238" text-anchor="middle">motor taar 2</text>
+          <rect class="box" x="750" y="150" width="190" height="100" rx="8"/>
+          <text class="t-b" x="845" y="182" text-anchor="middle">Right motors</text>
+          <text class="t-s" x="845" y="202" text-anchor="middle">1 motor, ya 2 parallel mein</text>
+          <text class="t-s" x="845" y="220" text-anchor="middle">(aage + peeche wala)</text>
+          <path class="w w-mot" d="M629 180 H750 M629 220 H750"/>
+
+          <!-- power wires -->
+          <path class="w w-pos" d="M390 309 V350 H300"/>
+          <text class="lab-pos" x="294" y="354" text-anchor="end">+11.1 V (switch se)</text>
+          <path class="w w-gnd" d="M431 309 V440 H300"/>
+          <text class="lab-gnd" x="294" y="436" text-anchor="end">battery −</text>
+          <text class="lab-gnd" x="294" y="452" text-anchor="end">+ Pi pin 34 (GND)</text>
+          <path class="no" d="M472 309 V352 M462 342 L482 362 M482 342 L462 362"/>
+          <text class="t-s" x="446" y="382">5V: khali</text>
+          <text class="t-s" x="446" y="397">chhodiye,</text>
+          <text class="t-s" x="446" y="412">Pi se mat</text>
+          <text class="t-s" x="446" y="427">jodiye</text>
+
+          <!-- control wires to the Pi, as a staircase so nothing crosses -->
+          <path class="w w-motor" d="M604 307 V352 H700"/>
+          <path class="w w-motor" d="M582 307 V374 H700"/>
+          <path class="w w-motor" d="M560 307 V396 H700"/>
+          <path class="w w-motor" d="M538 307 V418 H700"/>
+          <text class="lab-motor" x="708" y="356">IN4 ← Pi pin 37 · GPIO 26</text>
+          <text class="lab-motor" x="708" y="378">IN3 ← Pi pin 33 · GPIO 13</text>
+          <text class="lab-motor" x="708" y="400">IN2 ← Pi pin 35 · GPIO 19</text>
+          <text class="lab-motor" x="708" y="422">IN1 ← Pi pin 32 · GPIO 12</text>
+        </svg>
+      </div>
+      <figcaption>Left side ke motor OUT1/OUT2 par aur right side ke OUT3/OUT4 par. Chaar motor hain
+        to ek side ke dono motor ek hi terminal par parallel mein lagte hain. ENA/ENB aur 5V-EN ke kaale jumper
+        lage rehne dijiye. Rover tank ki tarah dono side alag chala kar mudta hai.</figcaption>
+    </figure>
+    <div class="warn" role="note">
+      <b>L298N ek side par sirf 2A tak sambhalta hai.</b>
+      <span>Ek side par 2 motor lagenge to board garam hoga. Shuru mein speed 30% rakhiye aur
+        board ko chhoo kar dekhte rahiye. Zyada garam ho to baad mein har side ke liye alag L298N ya BTS7960
+        lagaiye. Software dono ke saath chalta hai.</span>
+    </div>
+  </section>
+
+  <!-- ================================================== 3. PI HEADER -->
+  <section aria-labelledby="gpio">
+    <h2 id="gpio"><span class="n">3</span>Raspberry Pi 4 ke pins</h2>
+    <div class="header-card">
+      <div class="orient">
+        <span>Pi ko aise rakhiye ki USB aur Ethernet ports neeche hon aur 40 pins ki line right side mein.
+          <b>Pin 1</b> sabse upar, andar wali line mein hai. Uska solder pad chaukor (square) hota hai.
+          Pin 2 uske bagal mein, board ke kinare wali line mein.</span>
+      </div>
+      <div class="key">
+        <span><i style="background:var(--motor)"></i>L298N</span>
+        <span><i style="background:var(--servo)"></i>Servo signal</span>
+        <span><i style="background:var(--soil)"></i>Soil sensor</span>
+        <span><i style="background:var(--pwr)"></i>3.3V</span>
+        <span><i style="background:var(--gnd)"></i>GND</span>
+        <span><i style="background:var(--paper);border:2px solid var(--line-2);width:9px;height:9px"></i>khali</span>
+      </div>
+      <div class="pins" id="pins" role="group" aria-label="Raspberry Pi 4 40-pin header, what each used pin connects to"></div>
+    </div>
+  </section>
+
+  <!-- ===================================================== 4. SERVOS -->
+  <section aria-labelledby="srv">
+    <h2 id="srv"><span class="n">4</span>Servos: camera aur arm</h2>
+    <figure>
+      <div class="scroll">
+        <svg viewBox="0 0 760 190" role="img" aria-label="Every servo plug has three wires: brown goes to the servo rail minus, red to the servo rail plus at 5.5 volts, orange is the signal and goes to the Raspberry Pi pin in the table.">
+          <rect class="box" x="20" y="50" width="150" height="90" rx="10"/>
+          <text class="t-b" x="95" y="90" text-anchor="middle">Servo</text>
+          <text class="t-s" x="95" y="110" text-anchor="middle">MG996R / SG90</text>
+          <path class="w brown" d="M170 80 C230 80 230 60 300 60 H440"/>
+          <path class="w red" d="M170 95 C230 95 230 95 300 95 H440"/>
+          <path class="w orange" d="M170 110 C230 110 230 130 300 130 H440"/>
+          <rect x="300" y="48" width="34" height="94" rx="4" class="cap"/>
+          <text class="t-s" x="317" y="160" text-anchor="middle">plug</text>
+          <text class="t-b" x="452" y="64">Brown → servo rail − (GND)</text>
+          <text class="t-b" x="452" y="99">Red → servo rail + (5.5 V)</text>
+          <text class="t-b" x="452" y="134">Orange → Pi ka pin (neeche table)</text>
+          <text class="t-s" x="452" y="160">Red kabhi Pi ke 5V pin par nahi</text>
+        </svg>
+      </div>
+      <figcaption>Har servo ke teen taar hote hain. Laal aur brown buck B wali servo rail se, aur sirf
+        orange (signal) Pi ke pin par. Servo rail ka minus Pi ke pin 14 (GND) se bhi judna chahiye.</figcaption>
+    </figure>
+    <div class="tbl">
+      <table>
+        <thead><tr><th>Servo</th><th>Kaam</th><th>Orange taar → Pi pin</th><th>GPIO</th></tr></thead>
+        <tbody>
+          <tr><td><span class="sw" style="background:var(--servo)"></span><b>MG996R</b></td><td>Camera left / right ghumana</td><td class="num">Pin 12</td><td class="num">GPIO 18</td></tr>
+          <tr><td><span class="sw" style="background:var(--servo)"></span><b>Arm 1</b></td><td>Base (ghoomna)</td><td class="num">Pin 11</td><td class="num">GPIO 17</td></tr>
+          <tr><td><span class="sw" style="background:var(--servo)"></span><b>Arm 2</b></td><td>Shoulder</td><td class="num">Pin 13</td><td class="num">GPIO 27</td></tr>
+          <tr><td><span class="sw" style="background:var(--servo)"></span><b>Arm 3</b></td><td>Elbow</td><td class="num">Pin 15</td><td class="num">GPIO 22</td></tr>
+          <tr><td><span class="sw" style="background:var(--servo)"></span><b>Arm 4</b></td><td>Wrist upar / neeche</td><td class="num">Pin 16</td><td class="num">GPIO 23</td></tr>
+          <tr><td><span class="sw" style="background:var(--servo)"></span><b>Arm 5</b></td><td>Gripper (pakadna)</td><td class="num">Pin 18</td><td class="num">GPIO 24</td></tr>
+          <tr><td><span class="sw" style="background:var(--line-2)"></span>Arm 6 (agar ho)</td><td>Wrist ghumana</td><td class="num">Pin 29</td><td class="num">GPIO 5</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============================================ 5. SOIL AND CAMERA -->
+  <section aria-labelledby="sen">
+    <h2 id="sen"><span class="n">5</span>Soil sensor aur camera</h2>
+    <div class="two">
+      <div class="panel">
+        <h3>Soil moisture module</h3>
+        <div class="tbl" style="border:0">
+          <table style="min-width:0">
+            <thead><tr><th>Module pin</th><th>Pi pin</th></tr></thead>
+            <tbody>
+              <tr><td><b>VCC</b></td><td class="num">Pin 1 (3.3V) · 5V nahi</td></tr>
+              <tr><td><b>GND</b></td><td class="num">Pin 9 (GND)</td></tr>
+              <tr><td><b>DO</b></td><td class="num">Pin 22 (GPIO 25)</td></tr>
+              <tr><td><b>AO</b></td><td class="num">khali (ADS1115 ke liye)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Do-daant wala probe module ke doosre 2 pins par lagta hai. Probe ko halki geeli mitti mein daaliye aur
+          neela screw tab tak ghumaiye jab tak DO wali LED jal na jaye. Wahi "geela" ki seema ban jayegi.
+          VCC ko 5V par lagaya to DO pin Pi ko 5V bhejega aur Pi ka pin kharab ho jayega.</p>
+      </div>
+      <div class="panel">
+        <h3>Pi AI Camera</h3>
+        <p>Pi 4 mein camera ka ek hi port hai, isliye purana Camera v2 nikaal dijiye.</p>
+        <p><b>Cable:</b> dono sire barabar chaude wali cable lagaiye. "Standard – Mini" wali cable,
+          jiska ek sira patla hai, sirf Pi 5 ke liye hai.</p>
+        <p><b>Pi 4 par:</b> "CAMERA" likha port HDMI aur audio jack ke beech hai. Kaala latch dheere se upar
+          uthaiye, cable ke chamakte contacts HDMI ki taraf rakh kar andar daaliye, phir latch dabaiye.</p>
+        <p class="hint">Software AI Camera ke liye zaroori imx500-all package khud install karta hai.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====================================================== 6. ORDER -->
+  <section aria-labelledby="ord">
+    <h2 id="ord"><span class="n">6</span>Jodne ka kram</h2>
+    <ol class="steps">
+      <li><div><b>Sab band.</b><span>Battery nikli ho, Pi band ho, aur rover ke pahiye zameen se upar ho (kisi dabbe par).</span></div></li>
+      <li><div><b>Buck converter set kijiye.</b><span>Har buck ke input par battery lagaiye, output par multimeter lagaiye, aur screw ghuma kar A ko 5.1V aur B ko 5.5V par laaiye. Phir battery hata dijiye.</span></div></li>
+      <li><div><b>Camera cable.</b><span>Upar bataye tareeke se, Pi band rakh kar.</span></div></li>
+      <li><div><b>L298N ke signal.</b><span>IN1 pin 32, IN2 pin 35, IN3 pin 33, IN4 pin 37, aur L298N GND se Pi ka pin 34.</span></div></li>
+      <li><div><b>Motors.</b><span>Left motor OUT1/OUT2 par, right motor OUT3/OUT4 par.</span></div></li>
+      <li><div><b>Soil sensor.</b><span>VCC pin 1, GND pin 9, DO pin 22.</span></div></li>
+      <li><div><b>Servos.</b><span>Orange taar table ke hisaab se Pi ke pins par. Laal aur brown servo rail par. Servo rail ka minus Pi ke pin 14 par.</span></div></li>
+      <li><div><b>Power ki taar.</b><span>Battery + → fuse → switch → L298N 12V, buck A IN+, buck B IN+. Battery − → L298N GND, buck A IN−, buck B IN−. Buck A ka USB-C Pi mein.</span></div></li>
+      <li><div><b>Table se milaiye, phir battery.</b><span>Har taar section 3 se ek baar milaiye. LiPo alarm lagaiye, battery jodiye, aur switch on kijiye.</span></div></li>
+    </ol>
+  </section>
+
+  <!-- ================================================ 7. FIRST POWER -->
+  <section aria-labelledby="chk">
+    <h2 id="chk"><span class="n">7</span>Pehli baar on karne ke baad</h2>
+    <div class="two">
+      <div class="panel">
+        <h3>Check list</h3>
+        <ul class="checks">
+          <li><input type="checkbox" id="c1"><label for="c1">Pi ki hari LED blink ho rahi hai, aur 1 minute mein phone par <span class="mono">192.168.0.120:8080</span> khul gaya</label></li>
+          <li><input type="checkbox" id="c2"><label for="c2">Kuch garam ya jalne jaisa nahi lag raha. Pehle 2 minute tak L298N aur dono buck ko chhoo kar dekhiye.</label></li>
+          <li><input type="checkbox" id="c3"><label for="c3">Remote page → Take control → joystick ko thoda sa aage: dono side ke pahiye aage ghoome</label></li>
+          <li><input type="checkbox" id="c4"><label for="c4">Joystick side mein: rover apni jagah par ghooma (pahiye hawa mein)</label></li>
+          <li><input type="checkbox" id="c5"><label for="c5">Camera ‹ › se left aur right ghooma</label></li>
+          <li><input type="checkbox" id="c6"><label for="c6">Arm ka har joint + / − se ek-ek karke dheere chalaya</label></li>
+          <li><input type="checkbox" id="c7"><label for="c7">Probe geeli mitti mein: website par soil "wet" dikha</label></li>
+          <li><input type="checkbox" id="c8"><label for="c8">STOP dabaya aur sab ruk gaya</label></li>
+        </ul>
+      </div>
+      <div class="panel">
+        <h3>Kuch ulta chale to</h3>
+        <div class="faults">
+          <div><b>Ek side peeche ghoomti hai</b><span>Us side ke motor ke 2 taar L298N par aapas mein badal dijiye.</span></div>
+          <div><b>Joystick left, rover right</b><span>Left aur right ke motor ke taar ki jodi aapas mein badal dijiye (OUT1/2 ↔ OUT3/4).</span></div>
+          <div><b>Motor sirf bhinbhinaata hai, ghoomta nahi</b><span>Speed badhaiye. L298N kam speed par takat kho deta hai.</span></div>
+          <div><b>Camera "left" par right jaata hai</b><span>Mujhe bataiye, main software mein ek setting (<code>reverse</code>) badal dunga.</span></div>
+          <div><b>Servo kaanpte hain</b><span>Servo rail ka minus Pi ke GND (pin 14) se juda hona chahiye. Buck B kam se kam 5A ka ho.</span></div>
+          <div><b>Arm hilte hi Pi restart hota hai</b><span>Servo Pi ki power kheench rahe hain. Pi aur servo alag buck se chalne chahiye.</span></div>
+          <div><b>LiPo alarm baj raha hai</b><span>Turant band kijiye aur charge kijiye. 3S ko 9.9V se neeche le jaane se battery kharab ho jaati hai.</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+(function () {
+  // [pin, gpio or power name, what it goes to, kind]
+  var P = {
+    1: ['3.3V', 'Soil sensor VCC', '3v3'], 2: ['5V', 'khali (Pi USB-C se chalta hai)', ''],
+    3: ['GPIO 2', 'khali', ''], 4: ['5V', 'khali', ''],
+    5: ['GPIO 3', 'khali', ''], 6: ['GND', 'khali', ''],
+    7: ['GPIO 4', 'khali', ''], 8: ['GPIO 14', 'khali', ''],
+    9: ['GND', 'Soil sensor GND', 'gnd'], 10: ['GPIO 15', 'khali', ''],
+    11: ['GPIO 17', 'Arm base', 'servo'], 12: ['GPIO 18', 'Camera servo (MG996R)', 'servo'],
+    13: ['GPIO 27', 'Arm shoulder', 'servo'], 14: ['GND', 'Servo rail − (GND)', 'gnd'],
+    15: ['GPIO 22', 'Arm elbow', 'servo'], 16: ['GPIO 23', 'Arm wrist', 'servo'],
+    17: ['3.3V', 'khali', ''], 18: ['GPIO 24', 'Arm gripper', 'servo'],
+    19: ['GPIO 10', 'khali', ''], 20: ['GND', 'khali', ''],
+    21: ['GPIO 9', 'khali', ''], 22: ['GPIO 25', 'Soil sensor DO', 'soil'],
+    23: ['GPIO 11', 'khali', ''], 24: ['GPIO 8', 'khali', ''],
+    25: ['GND', 'khali', ''], 26: ['GPIO 7', 'khali', ''],
+    27: ['ID_SD', 'mat chhediye', ''], 28: ['ID_SC', 'mat chhediye', ''],
+    29: ['GPIO 5', '6th servo (agar ho)', ''], 30: ['GND', 'khali', ''],
+    31: ['GPIO 6', 'khali', ''], 32: ['GPIO 12', 'L298N IN1', 'motor'],
+    33: ['GPIO 13', 'L298N IN3', 'motor'], 34: ['GND', 'L298N GND', 'gnd'],
+    35: ['GPIO 19', 'L298N IN2', 'motor'], 36: ['GPIO 16', 'khali', ''],
+    37: ['GPIO 26', 'L298N IN4', 'motor'], 38: ['GPIO 20', 'khali', ''],
+    39: ['GND', 'khali', ''], 40: ['GPIO 21', 'khali', '']
+  };
+  var box = document.getElementById('pins'), html = '';
+  function cell(n, side) {
+    var p = P[n], k = p[2] ? ' k-' + p[2] : '', off = p[2] ? '' : ' off';
+    var lbl = '<div class="lbl ' + side + off + k + '">' +
+      (side === 'l' ? '<span class="to">' + p[1] + '</span><span class="g">' + p[0] + '</span>'
+                    : '<span class="g">' + p[0] + '</span><span class="to">' + p[1] + '</span>') + '</div>';
+    var pin = '<div class="' + k.trim() + '"><span class="pin' + (n === 1 ? ' sq' : '') +
+      '" aria-label="pin ' + n + '">' + n + '</span></div>';
+    return side === 'l' ? lbl + pin : pin + lbl;
+  }
+  for (var r = 0; r < 20; r++) {
+    var odd = r * 2 + 1, even = odd + 1;
+    html += cell(odd, 'l') + cell(even, 'r');
+  }
+  box.innerHTML = html;
+
+  // remember ticked checks on this phone only
+  try {
+    document.querySelectorAll('ul.checks input').forEach(function (c) {
+      c.checked = localStorage.getItem('ar750w.' + c.id) === '1';
+      c.addEventListener('change', function () {
+        try { localStorage.setItem('ar750w.' + c.id, c.checked ? '1' : '0'); } catch (e) {}
+      });
+    });
+  } catch (e) {}
+})();
+</script>
+
+</html>

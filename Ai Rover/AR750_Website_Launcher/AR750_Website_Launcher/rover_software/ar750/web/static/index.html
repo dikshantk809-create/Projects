@@ -1,0 +1,788 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0A0F0D">
+<meta name="description" content="AR-750 agricultural rover console">
+<title>AR-750 Console</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><text y='26' font-size='26'>&#127793;</text></svg>">
+<!-- fonts.css only exists if you ran scripts/fetch_fonts.py, for working offline -->
+<link rel="stylesheet" href="/static/fonts.css">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="backdrop"></div>
+
+<!-- one sprite of icons, so no icon is ever fetched over a field wifi -->
+<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">
+  <symbol id="i-live" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M6.3 6.3a8 8 0 0 0 0 11.4M17.7 17.7a8 8 0 0 0 0-11.4M3.5 3.5a12 12 0 0 0 0 17M20.5 20.5a12 12 0 0 0 0-17"/></symbol>
+  <symbol id="i-map" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z"/><path d="M9 4v14M15 6v14"/></symbol>
+  <symbol id="i-plant" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21V11"/><path d="M12 11C12 7 9 4 5 4c0 4 3 7 7 7Z"/><path d="M12 13c0-3.3 2.7-6 6-6 0 3.3-2.7 6-6 6Z"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3v16a2 2 0 0 0 2 2h16"/><path d="M7 15l3.5-4 3 2.5L20 7"/></symbol>
+  <symbol id="i-runs" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5-6-3.5Z"/></symbol>
+  <symbol id="i-bell" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 1 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M10.3 21a2 2 0 0 0 3.4 0"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/></symbol>
+  <symbol id="i-cog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 14a1.7 1.7 0 0 0 .4 1.9l.1.1a2 2 0 1 1-2.9 2.9l-.1-.1a1.7 1.7 0 0 0-2.9 1.2v.2a2 2 0 1 1-4 0v-.1A1.7 1.7 0 0 0 7 18.5a1.7 1.7 0 0 0-1.9.4l-.1.1a2 2 0 1 1-2.9-2.9l.1-.1a1.7 1.7 0 0 0-1.2-2.9H.9a2 2 0 1 1 0-4H1a1.7 1.7 0 0 0 1.5-2.6 1.7 1.7 0 0 0-.4-1.9l-.1-.1a2 2 0 1 1 2.9-2.9l.1.1A1.7 1.7 0 0 0 8 1.6h.1A2 2 0 0 1 10 0" transform="translate(2 2) scale(.92)"/></symbol>
+  <symbol id="i-cam" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5A2.5 2.5 0 0 1 5.5 6h2L9 4h6l1.5 2h2A2.5 2.5 0 0 1 21 8.5v8A2.5 2.5 0 0 1 18.5 19h-13A2.5 2.5 0 0 1 3 16.5v-8Z"/><circle cx="12" cy="12.5" r="3.4"/></symbol>
+  <symbol id="i-spray" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 8h6v12a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1V8Z"/><path d="M10 8V5h4v3"/><path d="M18 5h2M18 8h3M18 11h2"/></symbol>
+  <symbol id="i-gauge" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 18a10 10 0 1 1 17 0"/><path d="M12 14.5 16 10"/></symbol>
+  <symbol id="i-wheel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="M12 3v6M4.2 16.5 9.4 13.5M19.8 16.5 14.6 13.5"/></symbol>
+  <symbol id="i-drop" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3s6 6.4 6 10.4A6 6 0 0 1 6 13.4C6 9.4 12 3 12 3Z"/></symbol>
+  <symbol id="i-msg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H7l-4 3V12a8 8 0 0 1 8-8h2a8 8 0 0 1 8 8Z"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11 12 4l8 7"/><path d="M6 10v9a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1v-9"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m16.5 16.5 4 4"/></symbol>
+  <symbol id="i-out" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 4h3a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-3"/><path d="M10 8 6 12l4 4M6 12h9"/></symbol>
+  <symbol id="i-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v11M8 11l4 4 4-4"/><path d="M4 19h16"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m4.5 12.5 5 5 10-11"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4 2.5 20h19L12 4Z"/><path d="M12 10v4M12 17.2v.1"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H4v5M15 4h5v5M15 20h5v-5M9 20H4v-5"/></symbol>
+  <symbol id="i-zin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M11 8v6M8 11h6M16.5 16.5l4 4"/></symbol>
+  <symbol id="i-zout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M8 11h6M16.5 16.5l4 4"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></symbol>
+  <symbol id="i-joy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="11" rx="5.5"/><path d="M7.5 10.5v4M5.5 12.5h4"/><circle cx="15.6" cy="11.4" r=".6" fill="currentColor"/><circle cx="17.8" cy="13.8" r=".6" fill="currentColor"/></symbol>
+  <symbol id="i-arm" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 21h9"/><path d="M6 21v-2.5h4V21"/><path d="M8 18.5 10.5 9l7 2.5"/><circle cx="10.5" cy="9" r="1.6"/><path d="m17.5 11.5 2.5-3.2M17.5 11.5l3.4.9"/></symbol>
+  <symbol id="i-leaf" viewBox="0 0 24 24" fill="currentColor"><path d="M20 4c0 9-5.5 14-12 14-1.2 0-2.4-.2-3.5-.6l-.9 2.3-1.8-.7 1-2.4C1 15 2 8.5 7.5 6 11.6 4.2 16 6 20 4Zm-4.3 3.9C12.4 9.6 9.3 11.8 7 16c3.9.6 7.6-2.2 8.7-8.1Z"/></symbol>
+</svg>
+
+<div class="app">
+
+  <!-- =========================================================== the rail == -->
+  <nav class="rail" aria-label="Sections">
+    <div class="brand">
+      <span class="glyph"><svg><use href="#i-leaf"/></svg></span>
+      <span class="txt"><b>AgriRover</b><span>AR-750</span></span>
+    </div>
+
+    <div class="navlist" id="navList">
+      <div class="slider" id="navSlider"></div>
+      <button class="navbtn" data-page="live"><span class="ic"><svg><use href="#i-live"/></svg></span>Live
+        <span class="count" id="navAttn" hidden></span></button>
+      <button class="navbtn" data-page="remote"><span class="ic"><svg><use href="#i-joy"/></svg></span>Remote</button>
+      <button class="navbtn" data-page="arm"><span class="ic"><svg><use href="#i-arm"/></svg></span>Arm</button>
+      <button class="navbtn" data-page="field"><span class="ic"><svg><use href="#i-map"/></svg></span>Field map</button>
+      <button class="navbtn" data-page="plants"><span class="ic"><svg><use href="#i-plant"/></svg></span>Plants</button>
+      <button class="navbtn" data-page="charts"><span class="ic"><svg><use href="#i-chart"/></svg></span>Charts</button>
+      <button class="navbtn" data-page="runs"><span class="ic"><svg><use href="#i-runs"/></svg></span>Runs &amp; photos</button>
+      <button class="navbtn" data-page="alerts"><span class="ic"><svg><use href="#i-bell"/></svg></span>Alerts
+        <span class="count" id="navAlerts" hidden></span></button>
+      <button class="navbtn" data-page="timetable"><span class="ic"><svg><use href="#i-clock"/></svg></span>Timetable</button>
+      <button class="navbtn" data-page="settings"><span class="ic"><svg><use href="#i-cog"/></svg></span>Settings</button>
+    </div>
+
+    <div class="railfoot">
+      <div class="who"><b id="whoInitial">A</b><span id="whoName">signed in</span></div>
+      <span id="nextPatrol">No patrol set</span>
+      <button class="sm ghost wide" onclick="signOut()"><svg><use href="#i-out"/></svg>Sign out</button>
+    </div>
+  </nav>
+
+  <div class="main">
+
+    <!-- ========================================================== top bar == -->
+    <header class="top">
+      <span class="chip" id="cMode"><i class="dot"></i><span>—</span></span>
+      <span class="chip" id="cLink"><i class="dot"></i><span>connecting</span></span>
+      <span class="chip" id="cRC"><i class="dot"></i><span>remote —</span></span>
+      <span class="chip" id="cAI"><i class="dot"></i><span>AI —</span></span>
+      <span class="chip" id="cSpray"><i class="dot"></i><span>spray locked</span></span>
+      <span class="spacer"></span>
+      <button class="iconbtn" id="btnPalette" title="Search and commands (Ctrl+K)"
+              onclick="openPalette()"><svg><use href="#i-search"/></svg></button>
+      <button class="iconbtn" id="btnTheme" title="Light or dark"
+              onclick="toggleTheme()"><svg><use href="#i-sun"/></svg></button>
+      <button id="btnClear" class="sm" hidden onclick="cmd('clear_estop')">Clear the stop</button>
+      <button class="estop-btn" onclick="cmd('estop')">EMERGENCY STOP</button>
+    </header>
+
+    <div id="banner" class="banner"><i class="flash"></i><span id="bannerText"></span></div>
+    <div class="pwwarn" id="pwWarn" hidden role="alert">
+      <svg><use href="#i-warn"/></svg>
+      <span><span class="long">You are still signed in with the first password (admin / agrirover). Anyone on
+        this wifi who knows it can drive the rover.</span><span class="short">Still the first
+        password - anyone on this wifi can drive it.</span></span>
+      <button class="sm" onclick="go('settings')">Change it now</button>
+    </div>
+
+    <!-- =================================================== the big question -->
+    <div class="wrap" style="padding-bottom:0" id="askWrap" hidden>
+      <div class="card asking" id="askCard">
+        <h2><svg><use href="#i-warn"/></svg>It needs your answer</h2>
+        <div class="body">
+          <div class="row" style="align-items:flex-start;gap:16px">
+            <img id="askPhoto" alt="photo of the plant it is asking about"
+                 style="width:220px;border-radius:11px;border:1px solid var(--line)" hidden>
+            <div style="display:grid;gap:8px;min-width:220px;flex:1">
+              <h3 id="askTitle" style="font-size:19px"></h3>
+              <p id="askText" style="margin:0"></p>
+              <div class="row">
+                <button class="go" onclick="cmd('answer',{approve:true})"><svg><use href="#i-check"/></svg>Yes, do it</button>
+                <button onclick="cmd('answer',{approve:false})"><svg><use href="#i-x"/></svg>No, skip this plant</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================================ LIVE == -->
+    <section class="page wrap" id="p-live">
+
+      <div class="hero" id="hero">
+        <div class="gauge" data-g="batt">
+          <div class="ring">
+            <svg viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="50"/>
+              <circle class="val" cx="60" cy="60" r="50" id="gBatt"
+                      stroke-dasharray="314.16" stroke-dashoffset="314.16"/></svg>
+            <div class="mid"><b id="vBattPct">—</b><i>%</i></div>
+          </div>
+          <div class="lbl">Battery</div>
+          <div class="sub" id="vBatt">—</div>
+          <div class="spark" id="spkBatt"></div>
+        </div>
+
+        <div class="gauge" data-g="tank">
+          <div class="ring">
+            <svg viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="50"/>
+              <circle class="val" cx="60" cy="60" r="50" id="gTank"
+                      stroke-dasharray="314.16" stroke-dashoffset="314.16"/></svg>
+            <div class="mid"><b id="vTankPct">—</b><i>%</i></div>
+          </div>
+          <div class="lbl">Spray tank</div>
+          <div class="sub" id="vTank">—</div>
+          <div class="spark" id="spkTank"></div>
+        </div>
+
+        <div class="gauge" data-g="soil">
+          <div class="ring">
+            <svg viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="50"/>
+              <circle class="val" cx="60" cy="60" r="50" id="gSoil"
+                      stroke-dasharray="314.16" stroke-dashoffset="314.16"/></svg>
+            <div class="mid"><b id="vSoilPct">—</b><i>%</i></div>
+          </div>
+          <div class="lbl">Soil moisture</div>
+          <div class="sub" id="vSoil">—</div>
+          <div class="spark" id="spkSoil"></div>
+        </div>
+
+        <div class="gauge" data-g="job">
+          <div class="ring">
+            <svg viewBox="0 0 120 120"><circle class="track" cx="60" cy="60" r="50"/>
+              <circle class="val" cx="60" cy="60" r="50" id="gJob"
+                      stroke-dasharray="314.16" stroke-dashoffset="314.16"
+                      style="stroke:var(--amber)"/></svg>
+            <div class="mid"><b id="vJobPct">—</b><i id="vJobUnit">done</i></div>
+          </div>
+          <div class="lbl">This job</div>
+          <div class="sub" id="vJobSub">not running</div>
+          <div class="spark"></div>
+        </div>
+      </div>
+
+      <div class="cols">
+        <div class="stack-col">
+
+          <div class="card">
+            <h2><svg><use href="#i-cam"/></svg>Camera<span class="spacer"></span>
+              <button class="iconbtn" style="width:26px;height:26px" title="Full screen"
+                      onclick="zoomCam()"><svg><use href="#i-expand"/></svg></button>
+            </h2>
+            <div class="body">
+              <figure class="cam" id="camBox">
+                <img id="camF" alt="the front camera">
+                <div class="offline" id="camOff" hidden>
+                  <svg><use href="#i-cam"/></svg>
+                  <span>No picture from the front camera</span>
+                  <span class="note" style="font-size:12px">It reconnects on its own.</span>
+                </div>
+                <div class="hud">
+                  <div class="corner tl"></div><div class="corner tr"></div>
+                  <div class="corner bl"></div><div class="corner br"></div>
+                  <div class="cross"></div>
+                </div>
+                <div class="osd">
+                  <span id="osdSpeed">0.00 m/s</span>
+                  <span id="osdHead">0&deg;</span>
+                  <span id="osdMode">IDLE</span>
+                </div>
+                <span class="rec" id="recDot" hidden><b></b>REC</span>
+                <figcaption>FRONT &middot; driving and looking at the crop</figcaption>
+              </figure>
+              <p class="note">One camera, 254 mm above the ground, 95 mm ahead of the
+                front axle. It both follows the row and judges the plants, so keep
+                the lens clean.</p>
+              <div class="row">
+                <button class="sm" id="btnLamps" onclick="cmd('lamps',{on:!S.lamps_on})">Lamps</button>
+                <button class="sm" onclick="cmd('probe_soil')">Read the soil</button>
+                <button class="sm" id="btnRec" onclick="toggleRecord()">Start recording</button>
+                <button class="sm ghost" onclick="snapPhoto()"><svg><use href="#i-down"/></svg>Save a frame</button>
+              </div>
+              <p class="note" id="askNotify" hidden>
+                Want your phone to buzz when it needs you?
+                <button class="sm" onclick="enableNotifications()">Turn on alerts</button>
+              </p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2><svg><use href="#i-gauge"/></svg>How it is doing</h2>
+            <div class="body">
+              <div class="stats">
+                <div class="stat"><i>Speed</i><b id="vSpeed">—</b><div class="sub" id="sSpeed"></div></div>
+                <div class="stat"><i>Distance</i><b id="vDist">—</b><div class="sub" id="vDistSub"></div></div>
+                <div class="stat"><i>Checked</i><b id="vChecked">—</b><div class="sub">this run</div></div>
+                <div class="stat"><i>Needs you</i><b id="vAttn">—</b><div class="sub">problems found</div></div>
+                <div class="stat"><i>Turning</i><b id="vTurn">—</b><div class="sub" id="sTurn"></div></div>
+                <div class="stat"><i>CPU</i><b id="vCpu">—</b><div class="sub">board temperature</div></div>
+                <div class="stat"><i>Ahead</i><b id="vRange">—</b><div class="sub" id="sRange"></div></div>
+                <div class="stat"><i>Uptime</i><b id="vUp">—</b><div class="sub">since power on</div></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2><svg><use href="#i-map"/></svg>Where it is<span class="spacer"></span>
+              <span class="note num" id="trailPos"></span></h2>
+            <div class="body">
+              <div class="mapwrap">
+                <canvas id="trail" aria-label="the path it has taken"></canvas>
+                <div class="maptools">
+                  <button class="iconbtn" title="Clear the trail" onclick="clearTrail()">
+                    <svg><use href="#i-x"/></svg></button>
+                </div>
+              </div>
+              <div class="maplegend">
+                <span><b class="sym sym-ok">&#9679;</b>fine</span>
+                <span><b class="sym sym-attn">&#9650;</b>needs looking at</span>
+                <span><b class="sym sym-spray">&#9670;</b>sprayed</span>
+                <span class="spacer"></span><span class="note">1 m grid</span>
+              </div>
+              <div class="row">
+                <button class="sm" onclick="cmd('mark_home')"><svg><use href="#i-home"/></svg>Mark home here</button>
+                <button class="sm" id="btnGoHome" onclick="cmd('go_home')">Come home</button>
+                <button class="sm stop" id="btnStopHome" hidden onclick="cmd('stop_home')">Stop coming home</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="card pad-0">
+            <h2><svg><use href="#i-plant"/></svg>Checked since it powered on<span class="spacer"></span>
+              <a class="note" href="/api/report.csv">Download everything as CSV</a></h2>
+            <div class="scrollx"><table class="stack"><thead><tr>
+              <th>Plant</th><th>What it found</th><th>Sure</th><th>How bad</th>
+              <th>What it did</th><th>What you should do</th>
+            </tr></thead><tbody id="tblLive"></tbody></table></div>
+          </div>
+        </div>
+
+        <!-- ------------------------------------------------ right column -->
+        <div class="stack-col">
+
+          <div class="card">
+            <h2><svg><use href="#i-wheel"/></svg>Mode</h2>
+            <div class="body">
+              <div class="row">
+                <button id="mIDLE" onclick="cmd('mode',{mode:'IDLE'})">Idle</button>
+                <button id="mMANUAL" onclick="cmd('mode',{mode:'MANUAL'})">Manual</button>
+                <button id="mAUTO" onclick="cmd('mode',{mode:'AUTO'})">Auto</button>
+                <button id="mHOLD" onclick="cmd('mode',{mode:'HOLD'})">Hold</button>
+              </div>
+              <p class="note"><b>Manual</b> — your 6 channel remote drives it, or the pad
+                below when the remote is off. <b>Auto</b> — it follows the row, stops at
+                each plant and decides. Move any stick on the remote and it drops
+                straight back to manual.</p>
+              <div class="divider"></div>
+              <div class="row" style="gap:14px;align-items:center">
+                <div class="ring-progress">
+                  <svg viewBox="0 0 80 80"><circle class="t" cx="40" cy="40" r="33"/>
+                    <circle class="v" cx="40" cy="40" r="33" id="gMission"
+                            stroke-dasharray="207.3" stroke-dashoffset="207.3"/></svg>
+                  <div class="mid" id="gMissionTxt">0%</div>
+                </div>
+                <div style="flex:1;min-width:150px" id="missionKv"></div>
+              </div>
+              <div class="note" id="missionMsg"></div>
+              <div class="row">
+                <button class="go" onclick="cmd('mission_start',{plants:0})">Start the row</button>
+                <button onclick="cmd('mission_stop')">Stop the row</button>
+              </div>
+              <p class="note">How many rows it does, how long a row may be and how far
+                apart the rows are all live in Settings under Deciding.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2><svg><use href="#i-spray"/></svg>The spray boom</h2>
+            <div class="body">
+              <div class="row">
+                <button id="btnArm" onclick="cmd('spray_arm',{on:!S.spray_armed})">Arm the pump</button>
+                <button id="btnAuto" onclick="cmd('auto_spray',{on:!S.auto_spray})">Let it spray on its own</button>
+              </div>
+              <div class="row" style="gap:6px" id="nozzleRow"></div>
+              <div id="boomKv"></div>
+              <div class="row">
+                <button class="sm" onclick="testSpray(['left'])">Test left</button>
+                <button class="sm" onclick="testSpray(['centre'])">Test centre</button>
+                <button class="sm" onclick="testSpray(['right'])">Test right</button>
+                <button class="sm" onclick="testSpray(['left','centre','right'])">All five</button>
+                <button class="sm stop" onclick="cmd('spray_stop')">Shut it off</button>
+              </div>
+              <p class="note">Five nozzles 140 mm apart across a 700 mm boom, in three
+                sections. It lays a band down <b>as it drives</b> — a boom that sprays
+                while standing still dumps the lot in one spot, so the rover shuts it
+                off if it stops. The valves pulse about ten times a second to hit the
+                rate you set; check the label on the bottle for the rate and for how
+                long before you can pick.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2><svg><use href="#i-target"/></svg>Drive it yourself</h2>
+            <div class="body">
+              <div class="pad" id="pad">
+                <div class="rings">
+                  <i style="width:70%;height:70%"></i><i style="width:42%;height:42%"></i>
+                </div>
+                <div class="cross"></div>
+                <div class="knob" id="knob"></div>
+                <div class="padval" id="padVal">throttle 0% · steer 0%</div>
+              </div>
+              <label for="speed">Speed limit
+                <input type="range" id="speed" min="0.1" max="1" step="0.05" value="0.6">
+                <span class="hint"><span id="speedTxt">60%</span> of top speed</span>
+              </label>
+              <p class="note"><span id="liveHow">Up and down is throttle, left and right
+                points the front wheels. This machine steers like a car: it cannot turn
+                on the spot.</span> <b>W A S D</b> or the arrow keys work too. Works in
+                Manual, and only when a hand remote is off — the remote always wins.</p>
+            </div>
+          </div>
+
+          <div class="card" id="steerCard">
+            <h2><svg><use href="#i-wheel"/></svg>Steering</h2>
+            <div class="body">
+              <div class="steerviz" id="steerViz"></div>
+              <div id="steerKv"></div>
+              <div class="row">
+                <button class="sm" onclick="cmd('steer_centre')">Straighten the wheels</button>
+              </div>
+              <p class="note" id="steerNote"></p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2><svg><use href="#i-drop"/></svg>Soil probe</h2>
+            <div class="body">
+              <div id="probeKv"></div>
+              <div class="row">
+                <button class="sm" onclick="cmd('probe',{read:true})">Take a reading</button>
+                <button class="sm" onclick="cmd('probe',{down:true})">Send it down</button>
+                <button class="sm ghost" onclick="cmd('probe',{down:false})">Bring it up</button>
+              </div>
+              <p class="note">A lead screw drives the spike about 65 mm into the soil,
+                waits for the reading to settle, then pulls it out again. A moisture
+                reading taken in the air only tells you the air is dry.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2><svg><use href="#i-msg"/></svg>Messages<span class="spacer"></span>
+              <button class="sm ghost" style="padding:2px 8px;font-size:11.5px"
+                      onclick="cmd('clear_alerts')">Clear</button></h2>
+            <div class="body" style="padding:12px 16px">
+              <div class="log" id="logBox"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================= ARM == -->
+    <section class="page wrap" id="p-arm" hidden>
+      <div class="arm-grid">
+        <div class="card arm-viz">
+          <h2><svg><use href="#i-arm"/></svg>Robotic arm<span class="spacer"></span>
+            <span class="badge-soft armState">&mdash;</span></h2>
+          <div class="body">
+            <svg class="armdraw" id="armDraw" viewBox="0 0 400 290" role="img"
+                 aria-label="Side view of the arm, drawn from the joint angles, with a top view of the base">
+              <line class="ad-ground" x1="20" y1="250" x2="380" y2="250"/>
+              <rect class="ad-base" x="102" y="222" width="56" height="28" rx="5"/>
+              <g id="adGhost" class="ad-ghost"></g>
+              <g id="adArm"></g>
+              <g transform="translate(344 62)">
+                <circle class="ad-dial" r="34"/>
+                <line class="ad-tick" x1="0" y1="-34" x2="0" y2="-27"/>
+                <line id="adBase" class="ad-needle" x1="0" y1="0" x2="0" y2="-29"/>
+                <circle class="ad-hub" r="4"/>
+                <text class="ad-t" x="0" y="50" text-anchor="middle">base (top view)</text>
+                <text class="ad-t dim" x="0" y="-40" text-anchor="middle">ahead</text>
+              </g>
+            </svg>
+            <p class="note">Drawn live from the joint angles: solid is where the arm is, dashed is
+              where it is going. A guide to which slider moves what, not a measurement.</p>
+          </div>
+        </div>
+
+        <div class="card arm-ctl">
+          <h2><svg><use href="#i-target"/></svg>Move it</h2>
+          <div class="body">
+            <div class="row armPoses"></div>
+            <div class="row armGrip">
+              <button class="sm" onclick="armGrip(true)">Open the gripper</button>
+              <button class="sm" onclick="armGrip(false)">Close the gripper</button>
+            </div>
+            <div class="armJoints"></div>
+            <div class="armsave">
+              <label for="armPoseName">Save where the arm is now
+                <input type="text" id="armPoseName" maxlength="24" placeholder="e.g. pick a tomato"
+                       autocomplete="off"></label>
+              <button class="go" onclick="armSavePose()">Save pose</button>
+            </div>
+            <div class="row">
+              <button class="sm ghost armRelax" onclick="armRelax(this)">Relax (go limp)</button>
+            </div>
+            <p class="note armNote"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =========================================================== FIELD == -->
+
+    <!-- ========================================================== REMOTE == -->
+    <section class="page wrap" id="p-remote" hidden>
+      <div class="rm">
+
+        <!-- what it sees, and where it is looking -->
+        <div class="card rm-cam">
+          <figure class="rm-view">
+            <img id="rmCam" alt="what the front camera sees">
+            <div class="rm-off" id="rmCamOff" hidden><svg><use href="#i-warn"/></svg>No picture</div>
+            <div class="rm-look" id="rmLookWrap">
+              <button class="rm-pan l" onclick="lookStep(-45)" aria-label="Turn the camera left">&lsaquo;</button>
+              <button class="rm-pan r" onclick="lookStep(45)" aria-label="Turn the camera right">&rsaquo;</button>
+              <button class="rm-pill tl" id="rmSweep" onclick="lookAround()">&#8635; Look around</button>
+              <div class="rm-dialbox tr" aria-hidden="true">
+                <div class="rm-dial"><i id="rmNeedle"></i></div>
+                <span id="rmLookTxt">ahead</span>
+              </div>
+              <button class="rm-pill bc" id="rmAhead" onclick="lookAt(0)" hidden>Look ahead</button>
+            </div>
+          </figure>
+        </div>
+
+        <!-- on a phone, the stick and the arm take turns under the picture -->
+        <div class="rm-tabs" role="tablist" aria-label="What to control">
+          <button role="tab" id="rmTabDrive" aria-selected="true" onclick="rmTab('drive')">
+            <svg><use href="#i-joy"/></svg>Drive</button>
+          <button role="tab" id="rmTabArm" aria-selected="false" onclick="rmTab('arm')">
+            <svg><use href="#i-arm"/></svg>Robotic arm</button>
+        </div>
+
+        <!-- the thumb stick -->
+        <div class="card rm-drive">
+          <div class="rm-head">
+            <div class="rm-modes" role="group" aria-label="Who drives">
+              <button data-mode="MANUAL" onclick="pickMode('MANUAL')">Manual</button>
+              <button data-mode="AUTO" onclick="pickMode('AUTO')">AI &middot; auto</button>
+              <button data-mode="HOLD" onclick="pickMode('HOLD')">Hold</button>
+            </div>
+            <span class="spacer"></span>
+            <button class="estop-btn" onclick="cmd('estop')">STOP</button>
+          </div>
+          <div class="rm-confirm" id="rmAiAsk" hidden>
+            <b>AI mode drives by itself.</b>
+            <span id="rmAiAskText"></span>
+            <div class="row">
+              <button class="go" onclick="pickMode('AUTO', true)">Yes, let it drive</button>
+              <button class="ghost" onclick="document.getElementById('rmAiAsk').hidden = true">Not now</button>
+            </div>
+          </div>
+          <div class="rm-ai" id="rmAi" hidden>
+            <div class="rm-ai-top"><span class="chip on live" id="rmMode"><i class="dot"></i><span>&mdash;</span></span>
+              <span class="num" id="rmAiCount"></span></div>
+            <p id="rmAiStep"></p>
+          </div>
+          <div class="rm-stickwrap">
+            <div class="rm-stick pad" id="rmStick" aria-label="Drive: push up to go forward, sideways to steer">
+              <div class="rings"><i style="width:70%;height:70%"></i><i style="width:40%;height:40%"></i></div>
+              <div class="cross"></div>
+              <span class="rm-cue up">forward</span><span class="rm-cue dn">back</span>
+              <div class="knob" id="rmKnob"></div>
+            </div>
+            <div class="rm-gate" id="rmGate" hidden>
+              <p id="rmGateText"></p>
+              <button class="go" id="rmTake" onclick="takeControl()">Take control</button>
+            </div>
+          </div>
+          <div class="rm-readout num"><span id="rmThr">stopped</span><span id="rmStr">straight</span></div>
+          <label for="rmSpeed">Speed limit
+            <input type="range" id="rmSpeed" min="0.1" max="1" step="0.05" value="0.3">
+            <span class="hint"><span id="rmSpeedTxt">30%</span> of top speed - start low</span>
+          </label>
+          <p class="note"><span id="rmHow">Let go and it stops.</span> The phone
+            drives only in Manual, and a hand remote, if fitted, always wins.</p>
+        </div>
+
+        <!-- the arm -->
+        <div class="card rm-arm">
+          <h2><svg><use href="#i-arm"/></svg>Robotic arm<span class="spacer"></span>
+            <span class="badge-soft armState">&mdash;</span></h2>
+          <div class="body">
+            <div class="row armPoses"></div>
+            <div class="row armGrip">
+              <button class="sm" onclick="armGrip(true)">Open the gripper</button>
+              <button class="sm" onclick="armGrip(false)">Close the gripper</button>
+            </div>
+            <div class="armJoints"></div>
+            <div class="row">
+              <button class="sm ghost armRelax" onclick="armRelax(this)">Relax (go limp)</button>
+              <span class="spacer"></span>
+              <button class="sm" onclick="go('arm')">Full arm page &rsaquo;</button>
+            </div>
+            <p class="note armNote"></p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="page wrap" id="p-field" hidden>
+      <div class="card">
+        <h2><svg><use href="#i-map"/></svg>The field<span class="spacer"></span>
+          <span class="note" id="fieldCount"></span></h2>
+        <div class="body">
+          <div class="mapwrap">
+            <canvas id="fieldMap" aria-label="every plant, on a map"></canvas>
+            <div class="maptools">
+              <button class="iconbtn" title="Zoom in" onclick="fieldZoom(1.3)"><svg><use href="#i-zin"/></svg></button>
+              <button class="iconbtn" title="Zoom out" onclick="fieldZoom(1/1.3)"><svg><use href="#i-zout"/></svg></button>
+              <button class="iconbtn" title="Fit everything" onclick="fieldZoom(0)"><svg><use href="#i-target"/></svg></button>
+            </div>
+          </div>
+          <div class="maplegend">
+            <span><b class="sym sym-ok">&#9679;</b>fine last time</span>
+            <span><b class="sym sym-attn">&#9650;</b>had a problem</span>
+            <span><b class="sym sym-spray">&#9670;</b>was sprayed</span>
+            <span class="spacer"></span>
+            <span class="note">Drag to pan, scroll to zoom, tap a plant for its history</span>
+          </div>
+        </div>
+      </div>
+      <p class="note">Positions come from the rover's own odometry, so without wheel
+        encoders they drift over a long row. The plant numbers (r2p07 = row 2, plant 7)
+        are exact either way, and that is what the history is keyed on. Each state has
+        its own shape as well as its own colour, so the map still reads if you cannot
+        tell green from orange.</p>
+    </section>
+
+    <!-- ========================================================== PLANTS == -->
+    <section class="page wrap" id="p-plants" hidden>
+      <div class="card pad-0">
+        <h2><svg><use href="#i-plant"/></svg>Every plant it knows<span class="spacer"></span>
+          <span class="note" id="plantCount"></span></h2>
+        <div class="body">
+          <div class="row">
+            <input type="search" id="plantSearch" placeholder="Search a plant or a problem"
+                   oninput="renderPlantList()" style="max-width:300px">
+            <div class="seg" id="plantFilter">
+              <button data-f="" aria-pressed="true" onclick="setPlantFilter('')">All</button>
+              <button data-f="bad" aria-pressed="false" onclick="setPlantFilter('bad')">Problems</button>
+              <button data-f="sprayed" aria-pressed="false" onclick="setPlantFilter('sprayed')">Sprayed</button>
+            </div>
+            <span class="spacer"></span>
+            <a class="btn sm" href="/api/report.csv"><svg><use href="#i-down"/></svg>CSV</a>
+          </div>
+        </div>
+        <div class="scrollx"><table class="stack"><thead><tr>
+          <th>Plant</th><th>Last seen as</th><th>How bad</th><th>What it did</th>
+          <th>Treatment</th>
+        </tr></thead><tbody id="tblField"></tbody></table></div>
+      </div>
+    </section>
+
+    <!-- ========================================================== CHARTS == -->
+    <section class="page wrap" id="p-charts" hidden>
+      <div class="row">
+        <div class="seg" id="chartRange">
+          <button data-h="1" onclick="setRange(1)">Hour</button>
+          <button data-h="6" aria-pressed="true" onclick="setRange(6)">6 hours</button>
+          <button data-h="24" onclick="setRange(24)">Day</button>
+          <button data-h="168" onclick="setRange(168)">Week</button>
+        </div>
+      </div>
+      <div class="cols">
+        <div class="stack-col">
+          <div class="card"><div class="body">
+            <div class="chart-h"><h3>Battery</h3>
+              <span class="delta" id="dBatt">—</span>
+              <span class="now num" id="nowBatt">—</span></div>
+            <div class="chartbox" id="chBatt"></div>
+          </div></div>
+          <div class="card"><div class="body">
+            <div class="chart-h"><h3>Soil moisture</h3>
+              <span class="delta" id="dSoil">—</span>
+              <span class="now num" id="nowSoil">—</span></div>
+            <div class="chartbox" id="chSoil"></div>
+          </div></div>
+          <div class="card"><div class="body">
+            <div class="chart-h"><h3>Spray tank</h3>
+              <span class="delta" id="dTank">—</span>
+              <span class="now num" id="nowTank">—</span></div>
+            <div class="chartbox" id="chTank"></div>
+          </div></div>
+        </div>
+        <div class="stack-col">
+          <div class="card"><div class="body">
+            <div class="chart-h"><h3>Plants checked and problems found</h3></div>
+            <div class="chartbox" id="chDays"></div>
+            <div class="legend">
+              <span><b style="background:var(--s-1)"></b>checked</span>
+              <span><b style="background:var(--s-2)"></b>problems</span>
+            </div>
+          </div></div>
+          <div class="card"><h2><svg><use href="#i-warn"/></svg>What it has been finding</h2>
+            <div class="body"><div id="tally" style="display:grid;gap:12px"></div></div>
+          </div>
+          <div class="card"><h2><svg><use href="#i-gauge"/></svg>Last 14 days</h2>
+            <div class="body"><div class="stats" id="sumStats"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ RUNS == -->
+    <section class="page wrap" id="p-runs" hidden>
+      <div class="card pad-0">
+        <h2><svg><use href="#i-runs"/></svg>Every outing<span class="spacer"></span>
+          <a class="note" href="/api/report.csv">Download the log as CSV</a></h2>
+        <div class="scrollx"><table class="stack"><thead><tr>
+          <th>When</th><th>Lasted</th><th>Plants</th><th>Problems</th>
+          <th>Sprayed</th><th>Went</th><th>How it ended</th>
+        </tr></thead><tbody id="tblRuns"></tbody></table></div>
+      </div>
+
+      <div class="card"><h2><svg><use href="#i-cam"/></svg>Photos it has taken
+        <span class="spacer"></span><span class="note" id="photoCount"></span></h2>
+        <div class="body">
+          <p class="note">Every plant it looks at gets photographed. Download them
+            sorted into folders by what the rover called them, correct the wrong ones,
+            and you have a training set of your own plants under your own light —
+            which is the only kind worth training on.</p>
+          <div class="row">
+            <a class="btn" href="/api/photoset.zip"><svg><use href="#i-down"/></svg>Download the photo set</a>
+          </div>
+          <div class="gallery" id="gallery"></div>
+        </div>
+      </div>
+
+      <div class="card"><h2><svg><use href="#i-runs"/></svg>Recordings</h2>
+        <div class="body"><div id="recList" style="display:grid;gap:14px"></div></div>
+      </div>
+    </section>
+
+    <!-- ========================================================== ALERTS == -->
+    <section class="page wrap" id="p-alerts" hidden>
+      <div class="card"><h2><svg><use href="#i-bell"/></svg>Everything it has flagged
+        <span class="spacer"></span>
+        <button class="sm ghost" style="padding:2px 8px;font-size:11.5px"
+                onclick="cmd('clear_alerts').then(loadAlerts)">Mark all seen</button></h2>
+        <div class="body"><div id="alertList" style="display:grid;gap:10px"></div></div>
+      </div>
+      <p class="note">These are kept in the rover's own database, so they survive a
+        power cut. The Messages panel on the Live page only shows what has happened
+        since it was last switched on.</p>
+    </section>
+
+    <!-- ======================================================= TIMETABLE == -->
+    <section class="page wrap" id="p-timetable" hidden>
+      <div class="card"><h2><svg><use href="#i-clock"/></svg>Patrols<span class="spacer"></span>
+        <span class="note" id="patrolNext"></span></h2>
+        <div class="body">
+          <p class="note">A patrol only starts if the rover is parked, not stopped, has
+            more than 40% battery and the remote is off. If any of those is not true it
+            says so in the messages and waits for the next one. Spraying stays off
+            unless you tick it — and the pump still has to be armed.</p>
+        </div>
+      </div>
+      <div id="patrolList" style="display:grid;gap:12px"></div>
+
+      <div class="card"><h2><svg><use href="#i-plus"/></svg>Add a patrol</h2><div class="body">
+        <div class="formgrid">
+          <label for="pName">Name<input type="text" id="pName" placeholder="Morning check"></label>
+          <label for="pAt">Time<input type="time" id="pAt" value="07:00"></label>
+          <label for="pPlants">How many plants<input type="number" id="pPlants" value="0" min="0">
+            <span class="hint">0 means the whole row</span></label>
+        </div>
+        <div>
+          <div class="hint" style="margin-bottom:7px;font-size:11.5px;color:var(--dim)">Days</div>
+          <div class="row" id="dayPick"></div>
+        </div>
+        <label class="switch" for="pSpray"><input type="checkbox" id="pSpray">
+          <span>May spray on this patrol<div class="hint">off means look and report only</div></span></label>
+        <div class="row"><button class="go" onclick="addPatrol()"><svg><use href="#i-plus"/></svg>Add this patrol</button></div>
+      </div></div>
+    </section>
+
+    <!-- ======================================================== SETTINGS == -->
+    <section class="page wrap" id="p-settings" hidden>
+      <div class="card"><h2><svg><use href="#i-cog"/></svg>Who can sign in</h2><div class="body">
+        <p class="note">Your password is not stored anywhere in readable form, and it
+          is not in any file you edit. Change it here.</p>
+        <div class="formgrid">
+          <label for="accName">Username<input type="text" id="accName" autocomplete="username"></label>
+          <label for="accOld">Current password
+            <input type="password" id="accOld" autocomplete="current-password"></label>
+          <label for="accNew">New password
+            <input type="password" id="accNew" autocomplete="new-password">
+            <span class="hint">at least 6 characters</span></label>
+        </div>
+        <div class="row"><button onclick="changeAccount()">Save and sign in again</button></div>
+      </div></div>
+
+      <div class="card"><h2><svg><use href="#i-gauge"/></svg>What is actually fitted</h2>
+        <div class="body"><div id="fitted"></div></div>
+      </div>
+
+      <div id="setForm" style="display:grid;gap:15px"></div>
+
+      <div class="card"><h2><svg><use href="#i-msg"/></svg>Telegram</h2><div class="body">
+        <p class="note">Fill in the two Telegram boxes above and press Test. Message
+          @BotFather on Telegram, send /newbot for the token; then message your bot and
+          open api.telegram.org/bot&lt;token&gt;/getUpdates to find your chat id.</p>
+        <div class="row"><button onclick="testNotify()">Send a test message</button></div>
+      </div></div>
+
+      <div class="row"><button class="go wide" onclick="saveSettings()"><svg><use href="#i-check"/></svg>Save all settings</button></div>
+    </section>
+  </div>
+</div>
+
+<!-- ================================================================ overlays -->
+<div class="drawer" id="drawer">
+  <div class="veil" onclick="closeDrawer()"></div>
+  <div class="sheet" id="drawerBody" role="dialog" aria-label="plant history"></div>
+</div>
+
+<div class="palette" id="palette">
+  <div class="veil" onclick="closePalette()"></div>
+  <div class="box">
+    <input type="search" id="palInput" placeholder="Go to a page, or run a command…"
+           autocomplete="off" spellcheck="false">
+    <div class="hits" id="palHits"></div>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script src="/static/charts.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

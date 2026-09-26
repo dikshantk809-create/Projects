@@ -1,0 +1,210 @@
+AR-750 deploy   25-09-2026 23:36:52.34
+
+pi: pi@192.168.0.120
+===== 1. KEY LOGIN =====
+KEY_OK
+Raspberry Pi 4 Model B Rev 1.5
+PRETTY_NAME="Debian GNU/Linux 13 (trixie)"
+
+===== 2. CLEAN COPY =====
+57 files staged
+
+===== 3. SEND =====
+scp exit: 0
+
+===== 4. INSTALL =====
+install exit: 0
+
+[1;33m==>[0m Checking where we are
+    Raspberry Pi. Installing everything.
+
+    The Pi needs its own password once, for sudo.
+    Type it and press ENTER - nothing shows while you type.
+
+
+[1;33m==>[0m System packages
+    i2c-tools
+    python3-smbus
+    build-essential
+    python3-setuptools
+    wget
+
+[1;33m==>[0m Turning on the interfaces the rover needs
+    I2C on (ADS1115, IMU)
+    Camera: nothing to do, recent Pi OS finds it on its own.
+    AI Camera (IMX500) firmware installed. Reboot once after fitting the camera.
+    SBUS remote: only if you use it, add these to
+      /boot/firmware/config.txt   then reboot:
+         enable_uart=1
+         dtoverlay=disable-bt
+
+[1;33m==>[0m Python packages
+    OpenCV is already here from apt - not fetching it again
+
+[1;33m==>[0m Raspberry Pi extras (motor board, servo board, ADC, receiver)
+
+[1;33m==>[0m pigpio - the library every motor, valve and sensor goes through
+    already here
+    pigpiod is running and answering - the rover can drive its pins
+
+[1;33m==>[0m Folders
+
+[1;33m==>[0m Fonts for working offline
+asking Google Fonts for the stylesheet...
+downloading 19 font files...
+
+Done. The console now uses the fonts in static/fonts/.
+Reload the page on your phone to see it.
+
+[1;33m==>[0m Starting it automatically when the Pi boots
+    runs as: pi
+    Running now, and starts by itself every time the Pi boots.
+
+[1;33m==>[0m Checking it all imports
+    fine
+
+[1;33m==>[0m Running the safety tests
+
+140 passed, 0 failed
+
+
+--------------------------------------------------------------------
+ Ready.
+
+   Try it with no hardware:   python3 -m ar750.main --sim
+   Run it for real:           python3 -m ar750.main
+
+   Then open   http://192.168.0.120:8080
+   Sign in with   admin / agrirover   and change it straight away.
+
+ Is it up, and can it move?        bash scripts/status.sh
+ Every page and button, end to end: bash scripts/selftest.sh
+   (on a throwaway copy - none of your data is touched)
+
+ Before the first drive, bench test each part:
+   python3 scripts/bench.py wheels     (on blocks, wheels off the ground)
+   python3 scripts/bench.py steering   (protractor on a front wheel)
+   python3 scripts/bench.py rc         (check your channel map)
+   python3 scripts/bench.py probe      (nothing underneath it)
+   python3 scripts/bench.py boom       (nozzle sizing, before you buy nozzles)
+--------------------------------------------------------------------
+
+===== 5. START =====
+MODEL=Raspberry Pi 4 Model B Rev 1.5
+OS=Debian GNU/Linux 13 (trixie)
+IP=192.168.0.120
+SERVICE=active
+STARTS_AT_BOOT=enabled
+PIGPIOD=active
+HEALTH={"ok":true,"sim":false,"name":"AR-750"}
+PIGPIO_CONNECTED=True
+POWER=ok
+TEMP=46.7'C
+----- last lines from the rover -----
+Sep 25 23:29:49 pi python3[1574]:                 it steers like a car - it cannot turn on the spot
+Sep 25 23:29:49 pi python3[1574]:   website     : http://192.168.0.120:8080
+Sep 25 23:29:49 pi python3[1574]:   FIRST TIME: sign in with   admin / agrirover
+Sep 25 23:29:49 pi python3[1574]:   It will make you change both straight away.
+Sep 25 23:29:49 pi python3[1574]: ==================================================================
+Sep 25 23:43:27 pi systemd[1]: Stopping ar750.service - AR-750 rover...
+Sep 25 23:43:28 pi python3[1574]: stopping the rover...
+Sep 25 23:43:29 pi systemd[1]: ar750.service: Deactivated successfully.
+Sep 25 23:43:29 pi systemd[1]: Stopped ar750.service - AR-750 rover.
+Sep 25 23:43:29 pi systemd[1]: ar750.service: Consumed 3min 34.343s CPU time.
+Sep 25 23:45:07 pi systemd[1]: Started ar750.service - AR-750 rover.
+Sep 25 23:45:11 pi python3[3454]: [0:13:26.503801056] [3454]  INFO Camera camera_manager.cpp:340 libcamera v0.7.2+rpt20260817
+Sep 25 23:45:11 pi python3[3454]: [0:13:26.524086322] [3480]  INFO RPI pipeline_base.cpp:1133 Using configuration file '/usr/share/libcamera/pipeline/rpi/vc4/rpi_apps.yaml'
+Sep 25 23:45:11 pi python3[3454]: [0:13:26.552259898] [3480]  INFO IPAProxy ipa_proxy.cpp:184 Using tuning file /usr/share/libcamera/ipa/rpi/vc4/imx219.json
+Sep 25 23:45:11 pi python3[3454]: [0:13:26.558283124] [3480]  INFO Camera camera_manager.cpp:223 Adding camera '/base/soc/i2c0mux/i2c@1/imx219@10' for pipeline handler rpi/vc4
+Sep 25 23:45:11 pi python3[3454]: [0:13:26.558343236] [3480]  INFO RPI vc4.cpp:445 Registered camera /base/soc/i2c0mux/i2c@1/imx219@10 to Unicam device /dev/media4 and ISP device /dev/media2
+Sep 25 23:45:11 pi python3[3454]: [0:13:26.565180011] [3454]  INFO Camera camera.cpp:1216 configuring streams: (0) 640x480-RGB888/SMPTE170M/Rec709/None/Full (1) 640x480-SBGGR10_CSI2P/RAW
+Sep 25 23:45:11 pi python3[3454]: [0:13:26.565652815] [3480]  INFO RPI vc4.cpp:620 Sensor: /base/soc/i2c0mux/i2c@1/imx219@10 - Selected sensor format: 640x480-SBGGR10_1X10/RAW - Selected unicam format: 640x480-pBAA/RAW
+Sep 25 23:45:11 pi python3[3454]: ==================================================================
+Sep 25 23:45:11 pi python3[3454]:  AR-750
+Sep 25 23:45:11 pi python3[3454]:   mode        : hardware - the wheels are LIVE
+Sep 25 23:45:11 pi python3[3454]:   simulated   : battery, tank and soil readings (ADS1115)
+Sep 25 23:45:11 pi python3[3454]:   AI model    : not loaded (tflite runtime is not installed)
+Sep 25 23:45:11 pi python3[3454]:   remote      : not detected yet
+Sep 25 23:45:11 pi python3[3454]:   fitted      : drive, arm and camera servos
+Sep 25 23:45:11 pi python3[3454]:   steering    : tank style (L298N, left and right sides) - it can spin on the spot
+Sep 25 23:45:11 pi python3[3454]:   website     : http://192.168.0.120:8080
+Sep 25 23:45:11 pi python3[3454]:   FIRST TIME: sign in with   admin / agrirover
+Sep 25 23:45:11 pi python3[3454]:   It will make you change both straight away.
+Sep 25 23:45:11 pi python3[3454]: ==================================================================
+
+===== 6. FROM THE LAPTOP =====
+LAPTOP_SEES={"ok":true,"sim":false,"name":"AR-750"}
+
+===== 8. SELF TEST ON THE PI =====
+  PASS  /api/state top level               26 fields
+  PASS    telemetry                        16 fields
+  PASS    steering                         3 fields
+  PASS    boom                             6 fields
+  PASS    probe_hw                         4 fields
+  PASS    drive_hw                         2 fields
+  PASS    mission                          6 fields
+  PASS    mode is                          IDLE, sim=True
+  PASS  WS /ws handshake                   101 Switching Protocols
+  PASS  WS /ws first frame                 3704 bytes, mode=IDLE
+  PASS  GET /cam/front                     200, JPEG in the first 9000 bytes
+
+EVERY OTHER PAGE
+  PASS  GET /api/field                     0 plants
+  PASS  GET /api/history                   0 days, 0 problem kinds
+  PASS  GET /api/samples                   1 rows
+  PASS    a sample row                     5 fields
+  PASS  GET /api/missions                  0 runs
+  PASS  GET /api/recordings                0 recordings
+  PASS  GET /api/alerts  (new Alerts page) 0 alerts
+  PASS  GET /api/photos  (new gallery)     0 photos
+  PASS  GET /api/me                        signed in as admin
+  PASS  GET /api/patrols                   0 patrols
+  PASS  GET /api/settings                  5 fields
+  PASS    settings groups                  7 of 7, 35 settings
+  PASS  GET /api/report.csv                200, 148 bytes
+  PASS  GET /api/photoset.zip              200, 954 bytes
+
+BUTTONS THAT ACTUALLY DO SOMETHING
+  PASS  POST command mode                  {'ok': True}
+  PASS  POST command speed_limit           {'ok': True}
+  PASS  POST command lamps                 {'ok': True}
+  PASS  POST command lamps                 {'ok': True}
+  PASS  POST command probe_soil            {'ok': True, 'soil_pct': 46.15416898328695}
+  PASS  POST command mark_home             {'ok': True}
+  PASS  POST command spray_arm             {'ok': True}
+  PASS  POST command clear_alerts          {'ok': True}
+  PASS  POST command record                {'ok': True}
+  PASS  POST command estop                 {'ok': True}
+  PASS    state says it stopped            estop=True, mode=ESTOP
+  PASS    and it clears again              estop=False, mode=IDLE
+  PASS  unknown command is refused         {'ok': False, 'error': 'unknown command: definitely_not_a_command'}
+  PASS  POST /api/patrols (add)            id=1
+  PASS    it comes back in the list        1 patrols now
+  PASS    and deletes again                
+  PASS  POST /api/settings (a real value)  {}
+  PASS    and an out of range one is refused {'drive.speed_limit': 'the highest allowed is 1.0'}
+  PASS  signed out /api/state              401
+  PASS  signed out /api/field              401
+  PASS  signed out /api/settings           401
+
+THE PHONE REMOTE
+  PASS  GET / has the Remote page          200
+  PASS    state.servos                     4 fields
+  PASS    joints listed                    pan, base, shoulder, elbow, wrist, grip
+  PASS  POST command servo (pan 60)        {'ok': True}
+  PASS    it walks there, it does not jump base at 110.1 on the way from 90.0 to 150.0
+  PASS    past its limit is clamped        asked 999, target 160.0 (max 160.0)
+  PASS    a joint that is not there is refused {'ok': False, 'error': 'there is no joint called nose'}
+  PASS  POST command servo_pose            park
+  PASS    refused during an emergency stop {'ok': False, 'error': 'Clear the emergency stop first'}
+  PASS  POST command servo_relax           all limp
+  PASS  WS drive message reaches the wheels throttle=0.275
+  PASS    it stops when the messages stop  throttle=0.0
+
+==============================================================
+  65 passed, 0 failed
+==============================================================
+
+written to /home/pi/AR750_Rover/tests/last_selftest_report.txt
+
+===== END =====

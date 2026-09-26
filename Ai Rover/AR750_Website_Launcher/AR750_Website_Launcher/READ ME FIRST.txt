@@ -1,0 +1,206 @@
+==============================================================================
+  AR-750  -  THE WEBSITE, ON YOUR OWN COMPUTER
+==============================================================================
+
+  One file.  Double click  AR-750.bat.
+
+  That starts everything at once: it finds the rover on your wifi (even if
+  its address changed), waits for it if it is still starting, opens it on
+  this laptop, and opens a page with a QR code - scan it with the phone and
+  the phone opens the same rover. Both show the live camera and both can
+  drive it, the arm and the camera, at the same time.
+
+  Press M in that window for the menu: the pretend rover for trying things
+  on this laptop, sending new code to the Pi, the self test, and the rest.
+  The menu tells you at the top whether Python is installed, whether it has
+  been set up yet, and whether the console is running.
+
+  Building the rover?  The wiring for the small build (Raspberry Pi 4,
+  L298N, 3S LiPo, camera servo, 5-DOF arm, soil sensor, AI Camera) is in
+  rover_software\docs\WIRING_SMALL_BUILD.html - open it in any browser.
+
+
+------------------------------------------------------------------------------
+  THE MENU
+------------------------------------------------------------------------------
+
+  1  OPEN THE CONSOLE ON THIS COMPUTER          <--  start here
+
+     Runs the complete console on this computer with a pretend rover, and
+     opens it in your browser. Everything works: the dashboard, the live
+     map, the camera pane, missions, the plant history, the charts, the
+     alerts, the recordings, the patrol timetable and every settings page.
+     The numbers are made up, but the buttons are the real ones.
+
+     Sign in the first time with       admin  /  agrirover
+
+     It makes you change both straight away. After that, the username and
+     the password you set are stored on the website itself. You change them
+     on the Settings page whenever you like. You never edit any code to do
+     it.
+
+     The very first run downloads about 60 MB of Python libraries and takes
+     a few minutes. It only ever does that once. After that it opens in
+     seconds.
+
+     It needs Python on this computer. If you have not got it, the menu says
+     so and choice 3 still works. To install it, go to
+     https://www.python.org/downloads/ and tick "Add python.exe to PATH" on
+     the first screen of the installer - that tick box is the whole trick.
+
+     If the console is already running, choice 1 just reopens the browser
+     rather than starting a second copy.
+
+
+  2  CONNECT TO THE REAL ROVER
+
+     For when the rover is actually built and switched on. It asks for the
+     rover's address the first time, remembers it in rover_address.txt, and
+     opens it in your browser.
+
+     The rover prints its own address on the screen when it starts,
+     something like  192.168.1.42:8080. Your computer and the rover have to
+     be on the same wifi.
+
+     To reach it from outside the house, read
+     rover_software\docs\REMOTE_ACCESS.md. Short version: use Tailscale, and
+     do not open a port on your router.
+
+
+  3  JUST LOOK AT THE DESIGN
+
+     Opens a single saved page that shows what every screen looks like. No
+     Python, no rover, no internet. Nothing on it is live and nothing is
+     saved. Good for showing someone the design in ten seconds.
+
+
+  4  CHECK EVERYTHING IS WORKING
+
+     Starts a throwaway copy of the rover on its own port, with its own
+     empty data folder and its own login, and then calls every page and
+     presses every button on it: signing in, the live telemetry socket, the
+     camera stream, the field map, the charts, the timetable, the settings,
+     the emergency stop and the pages that must refuse you when you are
+     signed out. It prints a pass/fail line for each, shuts the copy down and
+     deletes it.
+
+     Nothing you have set up is read or written - not your database, not your
+     photos, not your password. The report is kept at
+     rover_software\tests\last_selftest_report.txt
+
+     Worth running after you change anything, and worth running once on the
+     Pi when the rover is built.
+
+
+  5  SEND THE CODE TO THE RASPBERRY PI
+
+     There is no separate "Raspberry Pi version" to hunt for. The folder
+     rover_software IS the rover's program - the same one you have been
+     clicking through on this laptop, with the fake hardware swapped for the
+     real hardware when it finds it.
+
+     This choice does the whole job in one go: makes a clean copy, sends it
+     to the Pi as ~/AR750_Rover, runs install.sh there, starts the rover,
+     checks it answers from the Pi and from this laptop, remembers its
+     address for choice 2, and runs the self test on the Pi. The Pi asks for
+     its own password once, for the install - type it and press ENTER.
+
+     It leaves out the Windows virtual environment, the caches and this
+     laptop's data\ folder, so the Pi's own database, photos and password
+     are never overwritten - send it again after every change and lose
+     nothing. Everything it did is written to tools\last_pi_deploy.txt.
+
+
+  6  LINK THIS LAPTOP TO THE RASPBERRY PI
+
+     Needed once: the first time, and again after the SD card is flashed
+     fresh. It finds the Pi on your wifi, asks for the Pi's password one
+     time, and puts this laptop's key on it - after that choice 5 connects
+     without a password. It remembers the Pi in pi_address.txt.
+
+
+  7  STOP THE CONSOLE
+
+     Shuts the console down when you have finished with choice 1. While it
+     is running there is a small black window on the taskbar - leave it
+     alone, and use choice 7 rather than closing it by hand.
+
+
+  8  QUIT
+
+     Closes the menu. It does not stop the console - use 7 for that.
+
+
+------------------------------------------------------------------------------
+  THINGS THE CONSOLE DOES THAT ARE NOT OBVIOUS
+------------------------------------------------------------------------------
+
+  Ctrl+K            opens a search box that jumps to any page and runs any
+                    command - stop, start a row, arm the pump, and so on.
+  1 - 8             jump straight to a page.
+  W A S D / arrows  drive it, while you are on the Live page, in Manual, and
+                    only when the remote is off. Let go and it stops.
+  Remote page       the whole rover from a phone: a thumb stick, the camera
+                    turning left and right, and the arm. On a phone, the
+                    Drive / Robotic arm tabs under the picture swap between
+                    the stick and the arm.
+  Manual / AI / Hold  the three buttons above the stick. Manual: you drive.
+                    AI (auto): it follows the crop row by itself with the
+                    camera and stops at each plant; the arm is locked and the
+                    camera looks straight ahead. Hold: wheels locked still.
+                    With no distance sensor fitted, AI mode asks once before
+                    it starts and never goes faster than 30%. Stay beside it.
+  Arm page          every joint with a slider, a live drawing of the arm, the
+                    ready-made poses, and SAVE POSE: move the arm where you
+                    want it, type a name, save - one tap brings it back. Saved
+                    poses live on the Pi and survive new code being sent.
+  SPACE             emergency stop.
+  The sun / moon    switches between the dark console and a light one for
+                    reading outdoors. It remembers which you chose.
+
+  On the field map every state has its own SHAPE as well as its own colour -
+  a circle is fine, a triangle wants looking at, a diamond was sprayed. Green
+  and red are the one pair a red-green colourblind eye cannot separate, so
+  the map is built not to need colour at all.
+
+  If the websocket cannot get through your wifi, the page quietly falls back
+  to polling instead of freezing on the last frame it received. The link chip
+  at the top says "slow link" when that happens.
+
+
+------------------------------------------------------------------------------
+  WHAT ELSE IS IN HERE
+------------------------------------------------------------------------------
+
+  rover_software\      The complete rover program. This is the same folder
+                       you copy onto the Raspberry Pi - it is not a separate
+                       or cut-down copy. The website lives inside it at
+                       rover_software\ar750\web\.
+
+  website_preview.html The saved picture of the console used by choice 3.
+
+  rover_address.txt    Where the rover's address is remembered, for choice 2.
+
+  pi_address.txt       Where the Pi's ssh address is remembered, for choices
+                       5 and 6. Choice 6 writes it.
+
+  tools\               The helpers AR-750.bat calls: starting everything
+                       (start_rover.ps1, phone_link.html), sending the code
+                       to the Pi (pi_deploy.bat), linking the laptop to it
+                       (pi_login_once.bat, locate_pi.ps1), and waiting for
+                       the console to be ready before the browser opens.
+                       Their last run is logged in the same folder.
+
+
+------------------------------------------------------------------------------
+  TWO HONEST NOTES
+------------------------------------------------------------------------------
+
+  There is no trained AI model in here yet. Until you train one on your own
+  plants, the rover photographs every plant and logs it as "not checked". It
+  will not guess a disease it has not been taught. The guide at
+  rover_software\docs\TRAINING_THE_MODEL.md walks through making one.
+
+  The simulator is the real program with the hardware replaced. What you see
+  on the dashboard is what the rover will do. What it cannot show you is
+  whether your wiring is right - that is what the circuit diagram is for.

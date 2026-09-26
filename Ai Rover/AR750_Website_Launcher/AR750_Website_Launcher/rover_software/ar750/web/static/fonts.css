@@ -1,0 +1,10 @@
+/* Left empty on purpose.
+
+   The console links to Google Fonts, which needs the Pi to be online. If your
+   rover works somewhere with no internet, run
+
+       python3 scripts/fetch_fonts.py
+
+   once while it IS online. That downloads the font files into static/fonts/
+   and rewrites this file with @font-face rules pointing at them, so the
+   console looks the same with no network at all. */
